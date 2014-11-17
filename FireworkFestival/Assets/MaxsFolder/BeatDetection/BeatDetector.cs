@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 
 public class BeatDetector : MonoBehaviour {
 	public AudioSource song;
@@ -14,11 +16,15 @@ public class BeatDetector : MonoBehaviour {
 	public int resetBeats;
 	public int enoughBeats = 0;
 	public int elapsedBeats = 0;
+
+	private Dictionary<float,float[]> _beatMap;
+	public string fileName;
 	
 	float[] historyBuffer = new float[43];
 	
 	// Use this for initialization
 	void Start () {
+		_beatMap = new Dictionary<float, float[]>();
 	}
 	
 	// Update is called once per frame
@@ -57,14 +63,17 @@ public class BeatDetector : MonoBehaviour {
 		if (e > (constant * E)) { // now we check if we have a beat
 			enoughBeats++;
 		}
-		if (enoughBeats > necessaryBeats){//(e > (constant * E)) { // now we check if we have a beat
+		if (e > (constant * E)) {//if (enoughBeats > necessaryBeats){//(e > (constant * E)) { // now we check if we have a beat
 			//Debug.LogError("beatfired");
 			enoughBeats = 0;
 			cube.GetComponent<MeshRenderer> ().material = red;
 		} else {
 			cube.GetComponent<MeshRenderer> ().material = yellow;
 		}
-
+		if (song.isPlaying) {
+			_beatMap[Time.fixedTime] = new float[2]{e,E};
+		}
+		
 		elapsedBeats++;
 		if (elapsedBeats > resetBeats) {
 			elapsedBeats = 0;
@@ -80,6 +89,21 @@ public class BeatDetector : MonoBehaviour {
 		
 		Debug.Log ("Constant: " + constant);
 		Debug.Log ("--------");
+		if (Input.GetKeyDown("w")) {
+			//Debug.LogError("here");
+			writeToFile();
+		}
+	}
+	
+	public void writeToFile () {
+		string[] allLines = new string[_beatMap.Keys.Count];
+		int i =0;
+		foreach (float timeStamp in _beatMap.Keys) {
+			string line = timeStamp.ToString() + " " + _beatMap[timeStamp][0].ToString() + " " + _beatMap[timeStamp][1].ToString() ;
+			allLines[i] = line;
+			i++;
+		}
+		System.IO.File.WriteAllLines(fileName, allLines);
 	}
 	
 	float sumStereo(float[] channel1, float[] channel2) {
