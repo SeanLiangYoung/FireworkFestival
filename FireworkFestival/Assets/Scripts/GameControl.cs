@@ -9,16 +9,21 @@ public class GameControl : MonoBehaviour
     public GameObject noteType2;
     public GameObject hitWindow;
 
+    public GameObject comboText;
+
     const float genInterval = 0.5f;
     float elapsedTime;
 
     LinkedList<GameObject> notes;
+
+    uint comboCount;
 
     // Use this for initialization
     void Start()
     {
         elapsedTime = genInterval;
         notes = new LinkedList<GameObject>();
+
     }
 
     void FixedUpdate()
@@ -32,9 +37,9 @@ public class GameControl : MonoBehaviour
             if (Random.value < 0.5)
             {
                 if (Random.value < 0.5)
-                    spawnNote(1);
+                    SpawnNote(1);
                 else
-                    spawnNote(2);
+                    SpawnNote(2);
             }
         }
 
@@ -47,7 +52,7 @@ public class GameControl : MonoBehaviour
 
     }
 
-    void spawnNote(int type)
+    void SpawnNote(int type)
     {
         GameObject aNote;
         if (type == 1)
@@ -60,22 +65,40 @@ public class GameControl : MonoBehaviour
         notes.AddLast(aNote);
     }
 
-    public void checkLastNote(  )
+    public void PressHitButton( int no )
     {
+        HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
+        hitResp.Hit();
+    }
+
+    public void ReleaseHitButton()
+    {
+        HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
+        hitResp.Release();
+    }
+
+
+    public void CheckLastNote()
+    {
+        HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
         Vector3 hitPosition = hitWindow.transform.position;
 
+        //Get the leftmost note, if available
         LinkedListNode<GameObject> aNote = notes.First;
         if (aNote != null)
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
-            notes.RemoveFirst();
 
-            noteScript.Die();
-            //if ( Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= 0.01f)
-            //{
-
+            hitResp.PlayHitEffect();
+            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= 0.1f)
+            {
                 
-            //}
+                ++comboCount;
+            }
+            else
+                comboCount = 0;
+            notes.RemoveFirst();
+            noteScript.Die();
         }
 
     }

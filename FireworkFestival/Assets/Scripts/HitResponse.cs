@@ -6,10 +6,14 @@ public class HitResponse : MonoBehaviour {
 	enum Status{ PRESS, PRESSING, RELEASE };
 	Status stat;
 
+    public GameObject hitEffectSample;
+    GameObject hitEffect;
+
 	Vector3 scale;
 
     const float animateTime = 0.1f;
     float animateElapsed; 
+
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +22,10 @@ public class HitResponse : MonoBehaviour {
 		scale = gameObject.transform.localScale;
 
         animateElapsed = animateTime;
+
+        hitEffect = GameObject.Instantiate(hitEffectSample) as GameObject;
+
+        hitEffect.transform.position = gameObject.transform.position + new Vector3(0,0, -0.5f); 
 	}
 	
 	// Update is called once per frame
@@ -53,4 +61,10 @@ public class HitResponse : MonoBehaviour {
             animateElapsed = animateTime;
 		}
 	}
+
+    public void PlayHitEffect()
+    {
+        ParticleSystem sys = hitEffect.GetComponent<ParticleSystem>();
+        sys.Play();
+    }
 }
