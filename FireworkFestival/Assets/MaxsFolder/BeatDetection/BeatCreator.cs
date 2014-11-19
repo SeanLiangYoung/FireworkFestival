@@ -76,7 +76,7 @@ public class BeatCreator : MonoBehaviour {
 				}
 			}
 		}
-		PlaySong();
+		//PlaySong();
 	}
 	// Use this for initialization
 	void Start () {
