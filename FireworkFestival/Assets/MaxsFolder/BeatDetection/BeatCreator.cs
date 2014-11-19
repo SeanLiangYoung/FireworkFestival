@@ -76,11 +76,13 @@ public class BeatCreator : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		float time = Time.time-_timeOffset;
-		if (time >= beats[_currentBeat]) {
-			cube.GetComponent<MeshRenderer> ().material = red;
-			_currentBeat++;
-		} else {
-			cube.GetComponent<MeshRenderer> ().material = yellow;
+		if (cube != null) {
+			if (time >= beats[_currentBeat]) {
+				cube.GetComponent<MeshRenderer> ().material = red;
+				_currentBeat++;
+			} else {
+				cube.GetComponent<MeshRenderer> ().material = yellow;
+			}
 		}
 		/*if (song.isPlaying) {
 			if (time >= _beatList[_currentBeat][0]) {
