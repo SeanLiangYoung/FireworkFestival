@@ -11,6 +11,8 @@ public class GameControl : MonoBehaviour
 
     public GameObject comboText;
 
+    public float hitMargin;
+
     const float genInterval = 0.5f;
     float elapsedTime;
 
@@ -29,8 +31,6 @@ public class GameControl : MonoBehaviour
         beatDurations = BeatCreator.instance.beatDurations;
 
         currentBeatIdx = 0;
-
-        while (beatDurations.Count == 0) ;
 
         elapsedTime = beatDurations[currentBeatIdx++];
 
@@ -100,8 +100,8 @@ public class GameControl : MonoBehaviour
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
-            
-            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= 0.2f)
+
+            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= hitMargin )
             {
                 hitResp.PlayHitEffect();
                 ++comboCount;
