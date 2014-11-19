@@ -24,7 +24,8 @@ public class Launcher : MonoBehaviour
 		// DEBUG.
 //		Debug.Log( "Inside Launch()." );
 
-		int i = Random.Range( 0, particles.Length );
+		//int i = Random.Range( 0, particles.Length );
+		int i = 7;
 
 		GameObject particle_go = particles[i];
 		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {
