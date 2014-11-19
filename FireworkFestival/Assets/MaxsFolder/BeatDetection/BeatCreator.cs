@@ -33,9 +33,6 @@ public class BeatCreator : MonoBehaviour {
 	}
 	void Awake () {
 		instance = this;
-	}
-	// Use this for initialization
-	void Start () {
 		_currentBeat = 0;
 		_beatList = new List<float[]>();
 		try
@@ -71,6 +68,9 @@ public class BeatCreator : MonoBehaviour {
 			}
 		}
 		PlaySong();
+	}
+	// Use this for initialization
+	void Start () {
 	}
 
 	public void PlaySong () {
