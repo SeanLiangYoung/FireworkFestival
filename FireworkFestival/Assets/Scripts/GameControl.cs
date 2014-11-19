@@ -16,13 +16,20 @@ public class GameControl : MonoBehaviour
 
     LinkedList<GameObject> notes;
 
+    List<float> beatDuration;
+
+    int currentBeatIdx;
     uint comboCount;
 
     // Use this for initialization
     void Start()
     {
-        elapsedTime = genInterval;
+        //elapsedTime = genInterval;
         notes = new LinkedList<GameObject>();
+        beatDuration = BeatCreator.instance.beatDurations;
+
+        currentBeatIdx = 0;
+        elapsedTime = beatDuration[currentBeatIdx++];
 
     }
 
@@ -31,15 +38,16 @@ public class GameControl : MonoBehaviour
         elapsedTime -= Time.deltaTime;
         if (elapsedTime <= 0.0)
         {
-            elapsedTime = genInterval;
+            //elapsedTime = genInterval;
+            elapsedTime = beatDuration[currentBeatIdx++];
 
-            //Create a note in 50% chance
-            if (Random.value < 0.5)
+            if (currentBeatIdx % 20 == 0)
             {
                 if (Random.value < 0.5)
                     SpawnNote(1);
                 else
                     SpawnNote(2);
+               
             }
         }
 
@@ -89,10 +97,10 @@ public class GameControl : MonoBehaviour
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
-            hitResp.PlayHitEffect();
-            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= 0.1f)
+            
+            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= 0.2f)
             {
-                
+                hitResp.PlayHitEffect();
                 ++comboCount;
             }
             else
