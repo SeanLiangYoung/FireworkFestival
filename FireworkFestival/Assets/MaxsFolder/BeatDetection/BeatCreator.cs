@@ -22,6 +22,8 @@ public class BeatCreator : MonoBehaviour {
 	private int _currentBeat;
 
 	public static BeatCreator instance;
+
+	public int beatMarginForError;
 	
 	
 	public static BeatCreator Instance
@@ -60,10 +62,17 @@ public class BeatCreator : MonoBehaviour {
 				beats.Add(_beatList[i][0]);// - currTime);
 				beatDurations.Add(_beatList[i][0]-currTime);
 				currTime = _beatList[i][0];
-				while (i < _beatList.Count-1 && e > (constant * E)) {
-					i++;
-					e = _beatList[i][1];
-					E = _beatList[i][2];
+				int misses = 0;
+				while (misses < beatMarginForError) {
+					if (i < _beatList.Count-1 && e > (constant * E) ) {
+						i++;
+						e = _beatList[i][1];
+						E = _beatList[i][2];
+						misses = 0;
+					} else {
+						i++;
+						misses++;
+					}
 				}
 			}
 		}
