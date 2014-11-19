@@ -34,6 +34,8 @@ public class GameControl : MonoBehaviour
         currentBeatIdx = 0;
 
         elapsedTime = beatDurations[currentBeatIdx++];
+
+        comboText.GetComponent<TextMesh>().text = "";
     }
 
     void Update()
@@ -47,14 +49,38 @@ public class GameControl : MonoBehaviour
             //if (currentBeatIdx % 20 == 0)
             {
                 if (Random.value < 0.5)
-                    SpawnNote(1, new Vector3(10.0f, 0.0f, 0.0f));
+                    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
                 else
-                    SpawnNote(2, new Vector3(10.0f, 0.0f, 0.0f));
+                    SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
                
             }
         }
+
+        CheckMissed();
+
         if( !bStartPlayback )
             CheckPlayback();
+    }
+
+    void CheckMissed()
+    {
+        while (true)
+        {
+            LinkedListNode<GameObject> aNote = notes.First;
+            if (aNote != null)
+            {
+                if (aNote.Value.transform.position.x < -25.0f)
+                {
+                    //Note noteScript = aNote.Value.GetComponent<Note>();
+                    notes.RemoveFirst();
+                    Destroy(aNote.Value);
+                }
+                else break;
+            }
+            else
+                break;
+
+        }
     }
 
     void CheckPlayback()
@@ -97,14 +123,16 @@ public class GameControl : MonoBehaviour
     }
 
 
-    public void CheckLastNote()
+    public bool CheckLastNote()
     {
+        
+        bool isHit = false;
         HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
         Vector3 hitPosition = hitWindow.transform.position;
 
         //Get the leftmost note, if available
         LinkedListNode<GameObject> aNote = notes.First;
-        if (aNote != null)
+        while (aNote != null)
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
@@ -113,12 +141,24 @@ public class GameControl : MonoBehaviour
             {
                 hitResp.PlayHitEffect();
                 ++comboCount;
-            }
-            else
-                comboCount = 0;
-            notes.RemoveFirst();
-            noteScript.Die();
-        }
+                isHit = true;
 
+                notes.Remove(aNote);
+                noteScript.Die();
+                break;
+            }
+   
+            aNote = aNote.Next;
+        }
+        if (!isHit)
+        {
+            comboCount = 0;
+            comboText.GetComponent<TextMesh>().text = "Break!";
+        }
+        else
+            comboText.GetComponent<TextMesh>().text = "Combo:" + comboCount;
+
+
+        return isHit;
     }
 }

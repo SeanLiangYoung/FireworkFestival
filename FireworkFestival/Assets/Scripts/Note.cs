@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Note : MonoBehaviour {
 
-
 	Vector3 velocity;
 	// Use this for initialization
 	void Start () {
