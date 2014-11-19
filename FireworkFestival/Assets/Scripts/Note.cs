@@ -8,11 +8,12 @@ public class Note : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		velocity = new Vector3( 0.1f, 0.0f, 0.0f );
+		velocity = new Vector3( 0.13f, 0.0f, 0.0f );
 	}
 
 	void FixedUpdate()
 	{
+        float elpasedTime = Time.deltaTime;
 		gameObject.transform.Translate( velocity );
 	}
 	

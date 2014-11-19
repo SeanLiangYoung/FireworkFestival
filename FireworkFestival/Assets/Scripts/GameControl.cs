@@ -23,6 +23,7 @@ public class GameControl : MonoBehaviour
     int currentBeatIdx;
     uint comboCount;
 
+    bool bStartPlayback = false;
     // Use this for initialization
     void Start()
     {
@@ -33,37 +34,44 @@ public class GameControl : MonoBehaviour
         currentBeatIdx = 0;
 
         elapsedTime = beatDurations[currentBeatIdx++];
-
     }
 
-    void FixedUpdate()
+    void Update()
     {
         elapsedTime -= Time.deltaTime;
         if (elapsedTime <= 0.0)
         {
             //elapsedTime = genInterval;
             elapsedTime = beatDurations[currentBeatIdx++];
-
+             
             //if (currentBeatIdx % 20 == 0)
             {
                 if (Random.value < 0.5)
-                    SpawnNote(1);
+                    SpawnNote(1, new Vector3(10.0f, 0.0f, 0.0f));
                 else
-                    SpawnNote(2);
+                    SpawnNote(2, new Vector3(10.0f, 0.0f, 0.0f));
                
             }
         }
-
+        if( !bStartPlayback )
+            CheckPlayback();
     }
 
-    // Update is called once per frame
-    void Update()
+    void CheckPlayback()
     {
-
-
+        LinkedListNode<GameObject> aNote = notes.First;
+        if (aNote != null)
+        {
+            Vector3 hitPosition = hitWindow.transform.position;
+            if ( hitPosition.x >= aNote.Value.transform.position.x-0.05f )
+            {
+                bStartPlayback = true;
+                BeatCreator.instance.PlaySong();
+            }
+        }
     }
 
-    void SpawnNote(int type)
+    void SpawnNote(int type, Vector3 pos)
     {
         GameObject aNote;
         if (type == 1)
@@ -71,7 +79,7 @@ public class GameControl : MonoBehaviour
         else
             aNote = GameObject.Instantiate(noteType2) as GameObject;
 
-        aNote.transform.position = new Vector3(10.0f, 0.0f, 0.0f);
+        aNote.transform.position = pos;
 
         notes.AddLast(aNote);
     }
