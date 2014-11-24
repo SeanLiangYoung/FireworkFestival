@@ -10,11 +10,15 @@ public class GameControl : MonoBehaviour
     public GameObject hitWindow;
 
     public GameObject comboText;
+    public GameObject scoreText;
+    public GameObject gameoverText;
 
     public float hitMargin;
 
     const float genInterval = 0.5f;
     float elapsedTime;
+    float gameOverTime = 2.0f;
+    float gameOverElapsedTime;
 
     LinkedList<GameObject> notes;
 
@@ -22,8 +26,11 @@ public class GameControl : MonoBehaviour
 
     int currentBeatIdx;
     uint comboCount;
+    uint score;
 
     bool bStartPlayback = false;
+    bool bGameOver = false;
+
     // Use this for initialization
     void Start()
     {
@@ -36,30 +43,43 @@ public class GameControl : MonoBehaviour
         elapsedTime = beatDurations[currentBeatIdx++];
 
         comboText.GetComponent<TextMesh>().text = "";
+
     }
 
     void Update()
     {
-        elapsedTime -= Time.deltaTime;
-        if (elapsedTime <= 0.0)
+        if (bGameOver)
         {
-            //elapsedTime = genInterval;
-            elapsedTime = beatDurations[currentBeatIdx++];
-             
-            //if (currentBeatIdx % 20 == 0)
+            gameOverElapsedTime -= Time.deltaTime;
+            if (gameOverElapsedTime <= 0)
             {
-                if (Random.value < 0.5)
-                    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-                else
-                    SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
-               
+                //Jump to score ranking scene
+                Application.LoadLevel("scoreRank");
             }
         }
+        else
+        {
+            elapsedTime -= Time.deltaTime;
+            if (elapsedTime <= 0.0 )
+            {
+                //elapsedTime = genInterval;
+                elapsedTime = beatDurations[currentBeatIdx++];
+             
+                //if (currentBeatIdx % 20 == 0)
+                {
+                    if (Random.value < 0.5)
+                        SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
+                    else
+                        SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
+               
+                }
+            }
 
-        CheckMissed();
+            CheckMissed();
 
-        if( !bStartPlayback )
-            CheckPlayback();
+            if( !bStartPlayback )
+                CheckPlayback();
+        }
     }
 
     void CheckMissed()
@@ -112,8 +132,11 @@ public class GameControl : MonoBehaviour
 
     public void PressHitButton( int no )
     {
-        HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
-        hitResp.Hit();
+        if (!bGameOver)
+        {
+            HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
+            hitResp.Hit();
+        }
     }
 
     public void ReleaseHitButton()
@@ -125,10 +148,13 @@ public class GameControl : MonoBehaviour
 
     public bool CheckLastNote()
     {
+        if (bGameOver)
+            return false;
         
         bool isHit = false;
         HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
         Vector3 hitPosition = hitWindow.transform.position;
+        GUIController guiController = gameObject.GetComponent<GUIController>();
 
         //Get the leftmost note, if available
         LinkedListNode<GameObject> aNote = notes.First;
@@ -139,6 +165,7 @@ public class GameControl : MonoBehaviour
 
             if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= hitMargin )
             {
+                
                 hitResp.PlayHitEffect();
                 ++comboCount;
                 isHit = true;
@@ -154,11 +181,55 @@ public class GameControl : MonoBehaviour
         {
             comboCount = 0;
             comboText.GetComponent<TextMesh>().text = "Break!";
+            guiController.IncreLiveBar(-1);
+
+            if (guiController.IsLiveZero())
+            {
+                bGameOver = true;
+
+                gameoverText.active = true;
+                gameOverElapsedTime = gameOverTime;
+
+                SaveHighScore();
+            }
         }
         else
-            comboText.GetComponent<TextMesh>().text = "Combo:" + comboCount;
+        {
+            score += 100 * (1+comboCount);
+            scoreText.GetComponent<TextMesh>().text = "Score:" + score;
 
+            guiController.IncreLiveBar(1);
+        }
 
         return isHit;
+    }
+
+    void SaveHighScore()
+    {
+        int highscore1 = PlayerPrefs.GetInt("HG1");
+        int highscore2 = PlayerPrefs.GetInt("HG2");
+        int highscore3 = PlayerPrefs.GetInt("HG3");
+
+        if (score > highscore1)
+        {
+            highscore3 = highscore2;
+            highscore2 = highscore1;
+            highscore1 = (int)score;
+        }
+        else if (score > highscore2)
+        {
+            highscore3 = highscore2;
+            highscore2 = (int)score;
+        }
+        else if (score > highscore3 )
+        {
+            highscore3 = (int)score;
+        }
+
+        PlayerPrefs.SetInt("HG1", highscore1);
+        PlayerPrefs.SetInt("HG2", highscore2);
+        PlayerPrefs.SetInt("HG3", highscore3);
+
+        PlayerPrefs.Save();
     }
 }
