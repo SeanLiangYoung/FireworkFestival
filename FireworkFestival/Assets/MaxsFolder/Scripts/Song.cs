@@ -12,7 +12,7 @@ public class Song : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (firstSong) {
-			SceneProperties.currentSongName = songName;
+			//SceneProperties.currentSongName = songName;
 		}
 		audioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
 		audioSource.clip = audioClip;

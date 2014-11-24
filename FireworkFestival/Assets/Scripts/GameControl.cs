@@ -30,21 +30,34 @@ public class GameControl : MonoBehaviour
 
     bool bStartPlayback = false;
     bool bGameOver = false;
-
+	bool levelLoaded = false;
     // Use this for initialization
     void Start()
     {
         //elapsedTime = genInterval;
         notes = new LinkedList<GameObject>();
-        beatDurations = BeatCreator.instance.beatDurations;
-
-        currentBeatIdx = 0;
-
-        elapsedTime = beatDurations[currentBeatIdx++];
+//        beatDurations = BeatCreator.instance.beatDurations;
+//
+//        currentBeatIdx = 0;
+//
+//        elapsedTime = beatDurations[currentBeatIdx++];
 
         comboText.GetComponent<TextMesh>().text = "";
+		StartCoroutine ("StartGame");
 
     }
+
+	public IEnumerator StartGame () {
+		yield return new WaitForSeconds(.5f);
+
+        currentBeatIdx = 0;
+		BeatCreator.Instance.CreateBeats();
+		
+		beatDurations = BeatCreator.Instance.beatDurations;
+		elapsedTime = beatDurations[currentBeatIdx++];
+		levelLoaded = true;
+
+	}
 
     void Update()
     {
@@ -57,13 +70,13 @@ public class GameControl : MonoBehaviour
                 Application.LoadLevel("scoreRank");
             }
         }
-        else
+        else if (levelLoaded)
         {
             elapsedTime -= Time.deltaTime;
             if (elapsedTime <= 0.0 )
             {
                 //elapsedTime = genInterval;
-                elapsedTime = beatDurations[currentBeatIdx++];
+                elapsedTime += beatDurations[currentBeatIdx++];
              
                 //if (currentBeatIdx % 20 == 0)
                 {
@@ -109,7 +122,7 @@ public class GameControl : MonoBehaviour
         if (aNote != null)
         {
             Vector3 hitPosition = hitWindow.transform.position;
-            if ( hitPosition.x >= aNote.Value.transform.position.x-0.05f )
+            if ( hitPosition.x >= aNote.Value.transform.position.x-1.0f )
             {
                 bStartPlayback = true;
                 BeatCreator.instance.PlaySong();
