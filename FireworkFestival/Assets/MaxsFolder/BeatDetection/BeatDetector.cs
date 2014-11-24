@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 
 public class BeatDetector : MonoBehaviour {
-	public AudioSource song;
+	public Song song;
+	//public Song song;
 	public GameObject cube;
 
 	public Material red;
@@ -28,7 +29,7 @@ public class BeatDetector : MonoBehaviour {
 	void Start () {
 		_beatMap = new Dictionary<float, float[]>();
 		if (recording) {
-			song.Play();
+			song.audioSource.Play();
 		}
 	}
 	
@@ -36,8 +37,8 @@ public class BeatDetector : MonoBehaviour {
 	void Update () {
 		
 		//compute instant sound energy
-		float[] channelRight = song.audio.GetSpectrumData (1024, 1, FFTWindow.Hamming);
-		float[] channelLeft = song.audio.GetSpectrumData (1024, 2, FFTWindow.Hamming);
+		float[] channelRight = song.audioSource.audio.GetSpectrumData (1024, 1, FFTWindow.Hamming);
+		float[] channelLeft = song.audioSource.audio.GetSpectrumData (1024, 2, FFTWindow.Hamming);
 		
 		float e = sumStereo (channelLeft, channelRight);
 		
@@ -75,7 +76,7 @@ public class BeatDetector : MonoBehaviour {
 		} else {
 			cube.GetComponent<MeshRenderer> ().material = yellow;
 		}
-		if (song.isPlaying) {
+		if (song.audioSource.isPlaying) {
 			_beatMap[Time.fixedTime] = new float[2]{e,E};
 		}
 		
@@ -108,7 +109,7 @@ public class BeatDetector : MonoBehaviour {
 			allLines[i] = line;
 			i++;
 		}
-		System.IO.File.WriteAllLines(fileName, allLines);
+		System.IO.File.WriteAllLines("Assets/MaxsFolder/Songs/" + song.songName + ".txt", allLines);
 	}
 	
 	float sumStereo(float[] channel1, float[] channel2) {

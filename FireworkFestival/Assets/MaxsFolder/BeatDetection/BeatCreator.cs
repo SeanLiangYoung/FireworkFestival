@@ -5,12 +5,13 @@ using System;
 using System.IO;
 
 public class BeatCreator : MonoBehaviour {
-
-	public string fileName;
 	private List<float[]> _beatList;
 	public List<float> beatDurations;
 	public List<float> beats;
-	public AudioSource song;
+
+	private Dictionary<string,Song> _songMap;
+	public Song _currentSong;
+	//public AudioSource song;
 	public GameObject cube;
 	
 	public Material red;
@@ -25,6 +26,7 @@ public class BeatCreator : MonoBehaviour {
 
 	public int beatMarginForError;
 	public bool testMode;
+	private bool _isPlaying;
 	
 	
 	public static BeatCreator Instance
@@ -38,9 +40,21 @@ public class BeatCreator : MonoBehaviour {
 		instance = this;
 		_currentBeat = 0;
 		_beatList = new List<float[]>();
+		beats = new List<float>();
+		beatDurations = new List<float>();
+		_songMap = new Dictionary<string, Song>();
+	}
+	public void AddSong (Song song) {
+		_songMap[song.songName] = song;
+		_currentSong = song;
+	}
+	void Start () {
+	}
+	public void CreateBeats () {
+		_currentSong = _songMap[SceneProperties.currentSongName];
 		try
 		{
-			using (StreamReader sr = new StreamReader(fileName))
+			using (StreamReader sr = new StreamReader("Assets/MaxsFolder/Songs/" + _currentSong.name + ".txt"))
 			{
 				while (!sr.EndOfStream) {
 					string[] line = sr.ReadLine().Split(new char[] { ' ' });
@@ -53,19 +67,17 @@ public class BeatCreator : MonoBehaviour {
 			Debug.LogError("The file could not be read:");
 			Debug.LogError(e.Message);
 		}
-		beats = new List<float>();
-		beatDurations = new List<float>();
 		float currTime = 0.0f;
 		for (int i = 0; i < _beatList.Count; i++) {
 			float e = _beatList[i][1];
 			float E = _beatList[i][2];
-			if (e > (constant * E)) {
+			if (e > (_currentSong.constant * E)) {
 				beats.Add(_beatList[i][0]);// - currTime);
 				beatDurations.Add(_beatList[i][0]-currTime);
 				currTime = _beatList[i][0];
 				int misses = 0;
-				while (misses < beatMarginForError) {
-					if (i < _beatList.Count-1 && e > (constant * E) ) {
+				while (misses < _currentSong.minBeatLength) {
+					if (i < _beatList.Count-1 && e > (_currentSong.constant * E) ) {
 						i++;
 						e = _beatList[i][1];
 						E = _beatList[i][2];
@@ -80,20 +92,17 @@ public class BeatCreator : MonoBehaviour {
 		if (testMode) {
 			PlaySong();
 		}
-	}
-	// Use this for initialization
-	void Start () {
-	}
 
+	}
 	public void PlaySong () {
 		_timeOffset = Time.time;
-		song.Play();
+		_currentSong.audioSource.Play();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		float time = Time.time-_timeOffset;
-		if (cube != null) {
+		if (_currentSong.audioSource.isPlaying&& cube != null) {
 			if (time >= beats[_currentBeat]) {
 				cube.GetComponent<MeshRenderer> ().material = red;
 				_currentBeat++;
@@ -101,6 +110,13 @@ public class BeatCreator : MonoBehaviour {
 				cube.GetComponent<MeshRenderer> ().material = yellow;
 			}
 		}
+
+		
+		if (Input.GetKeyDown("c")) {
+			CreateBeats();
+		}
+
+
 		/*if (song.isPlaying) {
 			if (time >= _beatList[_currentBeat][0]) {
 				float e = _beatList[_currentBeat][1];
