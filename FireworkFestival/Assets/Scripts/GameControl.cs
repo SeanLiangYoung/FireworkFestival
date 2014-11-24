@@ -180,7 +180,6 @@ public class GameControl : MonoBehaviour
             {
                 
                 hitResp.PlayHitEffect();
-                ++comboCount;
                 isHit = true;
 
                 notes.Remove(aNote);
@@ -208,9 +207,10 @@ public class GameControl : MonoBehaviour
         }
         else
         {
+            ++comboCount;
             score += 100 * (1+comboCount);
             scoreText.GetComponent<TextMesh>().text = "Score:" + score;
-
+            comboText.GetComponent<TextMesh>().text = "Combo: "+comboCount;
             guiController.IncreLiveBar(1);
         }
 
