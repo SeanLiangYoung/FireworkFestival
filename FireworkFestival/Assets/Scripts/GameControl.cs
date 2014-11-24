@@ -122,7 +122,7 @@ public class GameControl : MonoBehaviour
         if (aNote != null)
         {
             Vector3 hitPosition = hitWindow.transform.position;
-            if ( hitPosition.x >= aNote.Value.transform.position.x-1.0f )
+            if ( hitPosition.x >= aNote.Value.transform.position.x-.8f )
             {
                 bStartPlayback = true;
                 BeatCreator.instance.PlaySong();

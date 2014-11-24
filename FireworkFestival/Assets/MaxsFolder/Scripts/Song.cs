@@ -16,6 +16,7 @@ public class Song : MonoBehaviour {
 		}
 		audioSource = gameObject.AddComponent<AudioSource>() as AudioSource;
 		audioSource.clip = audioClip;
+		audioSource.panLevel = 0.0f;
 		BeatCreator.Instance.AddSong(this);
 	}
 	
