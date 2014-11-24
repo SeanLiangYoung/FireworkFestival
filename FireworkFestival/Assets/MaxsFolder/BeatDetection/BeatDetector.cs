@@ -19,12 +19,17 @@ public class BeatDetector : MonoBehaviour {
 
 	private Dictionary<float,float[]> _beatMap;
 	public string fileName;
+
+	public bool recording;
 	
 	float[] historyBuffer = new float[43];
 	
 	// Use this for initialization
 	void Start () {
 		_beatMap = new Dictionary<float, float[]>();
+		if (recording) {
+			song.Play();
+		}
 	}
 	
 	// Update is called once per frame

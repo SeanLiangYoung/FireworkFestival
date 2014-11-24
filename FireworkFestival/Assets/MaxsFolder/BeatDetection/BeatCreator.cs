@@ -24,6 +24,7 @@ public class BeatCreator : MonoBehaviour {
 	public static BeatCreator instance;
 
 	public int beatMarginForError;
+	public bool testMode;
 	
 	
 	public static BeatCreator Instance
@@ -76,7 +77,9 @@ public class BeatCreator : MonoBehaviour {
 				}
 			}
 		}
-		//PlaySong();
+		if (testMode) {
+			PlaySong();
+		}
 	}
 	// Use this for initialization
 	void Start () {
