@@ -17,6 +17,8 @@ public class GameControl : MonoBehaviour
 
     const float genInterval = 0.5f;
     float elapsedTime;
+    float gameOverTime = 2.0f;
+    float gameOverElapsedTime;
 
     LinkedList<GameObject> notes;
 
@@ -46,26 +48,38 @@ public class GameControl : MonoBehaviour
 
     void Update()
     {
-        elapsedTime -= Time.deltaTime;
-        if (elapsedTime <= 0.0)
+        if (bGameOver)
         {
-            //elapsedTime = genInterval;
-            elapsedTime = beatDurations[currentBeatIdx++];
-             
-            //if (currentBeatIdx % 20 == 0)
+            gameOverElapsedTime -= Time.deltaTime;
+            if (gameOverElapsedTime <= 0)
             {
-                if (Random.value < 0.5)
-                    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-                else
-                    SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
-               
+                //Jump to score ranking scene
+                Application.LoadLevel("scoreRank");
             }
         }
+        else
+        {
+            elapsedTime -= Time.deltaTime;
+            if (elapsedTime <= 0.0 )
+            {
+                //elapsedTime = genInterval;
+                elapsedTime = beatDurations[currentBeatIdx++];
+             
+                //if (currentBeatIdx % 20 == 0)
+                {
+                    if (Random.value < 0.5)
+                        SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
+                    else
+                        SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
+               
+                }
+            }
 
-        CheckMissed();
+            CheckMissed();
 
-        if( !bStartPlayback )
-            CheckPlayback();
+            if( !bStartPlayback )
+                CheckPlayback();
+        }
     }
 
     void CheckMissed()
@@ -134,6 +148,8 @@ public class GameControl : MonoBehaviour
 
     public bool CheckLastNote()
     {
+        if (bGameOver)
+            return false;
         
         bool isHit = false;
         HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
@@ -171,7 +187,10 @@ public class GameControl : MonoBehaviour
             {
                 bGameOver = true;
 
-                
+                gameoverText.active = true;
+                gameOverElapsedTime = gameOverTime;
+
+                SaveHighScore();
             }
         }
         else
@@ -183,5 +202,34 @@ public class GameControl : MonoBehaviour
         }
 
         return isHit;
+    }
+
+    void SaveHighScore()
+    {
+        int highscore1 = PlayerPrefs.GetInt("HG1");
+        int highscore2 = PlayerPrefs.GetInt("HG2");
+        int highscore3 = PlayerPrefs.GetInt("HG3");
+
+        if (score > highscore1)
+        {
+            highscore3 = highscore2;
+            highscore2 = highscore1;
+            highscore1 = (int)score;
+        }
+        else if (score > highscore2)
+        {
+            highscore3 = highscore2;
+            highscore2 = (int)score;
+        }
+        else if (score > highscore3 )
+        {
+            highscore3 = (int)score;
+        }
+
+        PlayerPrefs.SetInt("HG1", highscore1);
+        PlayerPrefs.SetInt("HG2", highscore2);
+        PlayerPrefs.SetInt("HG3", highscore3);
+
+        PlayerPrefs.Save();
     }
 }
