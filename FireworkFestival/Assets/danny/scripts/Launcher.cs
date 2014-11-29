@@ -12,10 +12,6 @@ public class Launcher : MonoBehaviour
 	{
 		GameObject particle_go = particles[particle_index];
 		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {
-//			if ( current_go ) {
-//				Destroy( current_go );
-//			}
-
 			if ( !current_go ) {
 				GameObject go = ( GameObject )Instantiate( particle_go, this.transform.position, this.transform.rotation );
 				current_go = go;
