@@ -5,79 +5,67 @@ public class CustomizationSceneLauncher : MonoBehaviour
 {
 	public GameObject[] particles;
 
-	private int curr_particle_index;
-	private int curr_launcher_index;
 	private GameObject current_go;
-	private int[] launcher_particle_correspondences;
+	private Transform star;
 
 	void Start()
 	{
-		curr_particle_index = 0;
-		curr_launcher_index = 0;
-		launcher_particle_correspondences = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
-		SwapParticleSystems();
-	}
+		star = gameObject.transform.FindChild( "star" );
 
-	void Update()
-	{
-		if ( Input.GetKeyDown( KeyCode.RightArrow ) ) {
-			++curr_particle_index;
-			curr_particle_index = ( curr_particle_index > 7 ) ? 0 : curr_particle_index;
-			SwapParticleSystems();
-		}
-		else if ( Input.GetKeyDown( KeyCode.LeftArrow ) ) {
-			--curr_particle_index;
-			curr_particle_index = ( curr_particle_index < 0 ) ? 7 : curr_particle_index;
-			SwapParticleSystems();
-		}
-
-		if ( Input.GetKeyDown( KeyCode.A ) ) {
-			curr_launcher_index = 0;
-		}
-		else if ( Input.GetKeyDown( KeyCode.S ) ) {
-			curr_launcher_index = 1;
-		}
-		else if ( Input.GetKeyDown( KeyCode.D ) ) {
-			curr_launcher_index = 2;
-		}
-		else if ( Input.GetKeyDown( KeyCode.F ) ) {
-			curr_launcher_index = 3;
-		}
-		else if ( Input.GetKeyDown( KeyCode.J ) ) {
-			curr_launcher_index = 4;
-		}
-		else if ( Input.GetKeyDown( KeyCode.K ) ) {
-			curr_launcher_index = 5;
-		}
-		else if ( Input.GetKeyDown( KeyCode.L ) ) {
-			curr_launcher_index = 6;
-		}
-		else if ( Input.GetKeyDown( KeyCode.Semicolon ) ) {
-			curr_launcher_index = 7;
-		}
-	}
-	
-	public void SwapParticleSystems()
-	{
-		launcher_particle_correspondences[curr_launcher_index] = curr_particle_index;
-
-		GameObject particle_go = particles[curr_particle_index];
+		GameObject particle_go = particles[0];
 		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {
-//			if ( current_go ) {
-//				Destroy( current_go );
-//			}
-//			
-//			if ( !current_go ) {
-//				GameObject go = ( GameObject )Instantiate( particle_go, this.transform.position, this.transform.rotation );
-//				current_go = go;
-//			}
+			GameObject go = ( GameObject )Instantiate( particle_go, this.transform.position, this.transform.rotation );
+			current_go = go;
+		}
+	}
 
+	public void SwapParticleSystems( int particle_index )
+	{
+		GameObject particle_go = particles[particle_index];
+		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {
 			Destroy( current_go );
 			GameObject go = ( GameObject )Instantiate( particle_go, this.transform.position, this.transform.rotation );
 			current_go = go;
-			
+		}
+	}
+
+	public void PlayParticleSystem()
+	{
+		SetStarVisibility( true );
+
+		if ( current_go != null ) {
 			ParticleSystem ps = ( ParticleSystem )current_go.GetComponent( typeof( ParticleSystem ) );
-			ps.Play ();
+			ps.Play();
+		}
+		else {
+			Debug.Log( "Cannot play particle system b/c particle system has not yet been instantiated." );
+		}
+	}
+
+	public void StopParticleSystem()
+	{
+		SetStarVisibility( false );
+
+		if ( current_go != null ) {
+			ParticleSystem ps = ( ParticleSystem )current_go.GetComponent( typeof( ParticleSystem ) );
+			ps.Stop ();
+		}
+		else {
+			Debug.Log( "Cannot stop particle system b/c particle system has not yet been instantiated." );
+		}
+	}
+
+	private void SetStarVisibility( bool display_star )
+	{
+		if ( display_star ) {
+			if ( star != null ) {
+				star.renderer.enabled = true;
+			}
+		}
+		else {
+			if ( star != null ) {
+				star.renderer.enabled = false;
+			}
 		}
 	}
 }
