@@ -19,7 +19,7 @@ public class CustomizationSceneLauncher : MonoBehaviour
 		}
 	}
 
-	public void SwapParticleSystems( int particle_index )
+	public void SetParticleSystem( int particle_index )
 	{
 		GameObject particle_go = particles[particle_index];
 		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {

@@ -18,8 +18,6 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		launcher_particle_correspondences = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
 
 		InitializeFireworkLaunchers();
-		UpdateFireworkLaunchers();
-		SwapParticleSystems();
 	}
 	
 	void Update()
@@ -84,7 +82,8 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
 				CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
 				curr_particle_index = launcher_particle_correspondences[i];
-				launcher_script.SwapParticleSystems( curr_particle_index );
+				launcher_script.SetParticleSystem( curr_particle_index );
+				launcher_script.StopParticleSystem();
 			}
 		}
 	}
@@ -96,7 +95,7 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		GameObject launcher_go = launchers[curr_launcher_index];
 		if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
 			CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
-			launcher_script.SwapParticleSystems( curr_particle_index );
+			launcher_script.SetParticleSystem( curr_particle_index );
 		}
 	}
 
