@@ -55,7 +55,7 @@ public class CustomizationSceneLauncher : MonoBehaviour
 		}
 	}
 
-	private void SetStarVisibility( bool display_star )
+	public void SetStarVisibility( bool display_star )
 	{
 		if ( display_star ) {
 			if ( star != null ) {
@@ -66,6 +66,17 @@ public class CustomizationSceneLauncher : MonoBehaviour
 			if ( star != null ) {
 				star.renderer.enabled = false;
 			}
+		}
+	}
+
+	public void LaunchOneShell()
+	{
+		if ( current_go != null ) {
+			ParticleSystem ps = ( ParticleSystem )current_go.GetComponent( typeof( ParticleSystem ) );
+			ps.Emit( 1 );
+		}
+		else {
+			Debug.Log( "Cannot emit one shell for particle system b/c particle system has not yet been instantiated." );
 		}
 	}
 }

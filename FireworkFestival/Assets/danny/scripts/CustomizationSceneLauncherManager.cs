@@ -9,6 +9,7 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 	private int prev_launcher_index;
 	private int curr_launcher_index;
 	private int[] launcher_particle_correspondences;
+	private bool freestyle_mode;
 	
 	void Start()
 	{
@@ -16,11 +17,41 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		prev_launcher_index = 0;
 		curr_launcher_index = 0;
 		launcher_particle_correspondences = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+		freestyle_mode = false;
 
 		InitializeFireworkLaunchers();
 	}
 	
 	void Update()
+	{
+		if ( Input.GetKeyDown( KeyCode.Space ) ) {
+			if ( freestyle_mode ) {
+				// Cleanup for transition from freestyle mode to customization mode.
+				SetStarVisibilityForAllLaunchers( false );
+				GameObject launcher_go = launchers[curr_launcher_index];
+				if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+					CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+					launcher_script.PlayParticleSystem();
+				}
+			}
+			else {
+				// Cleanup for transition from customization mode to freestyle mode.
+				StopAllLaunchers();
+				SetStarVisibilityForAllLaunchers( true );
+			}
+
+			freestyle_mode = !freestyle_mode;
+		}
+
+		if ( freestyle_mode ) {
+			DetectFreestyleModeInput();
+		}
+		else {
+			DetectCustomizationModeInput();
+		}
+	}
+
+	private void DetectCustomizationModeInput()
 	{
 		if ( Input.GetKeyDown( KeyCode.RightArrow ) ) {
 			++curr_particle_index;
@@ -75,6 +106,69 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		}
 	}
 
+	private void DetectFreestyleModeInput()
+	{
+		GameObject launcher_go;
+		CustomizationSceneLauncher launcher_script;
+
+		if ( Input.GetKeyDown( KeyCode.A ) ) {
+			launcher_go = launchers[0];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.S ) ) {
+			launcher_go = launchers[1];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.D ) ) {
+			launcher_go = launchers[2];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.F ) ) {
+			launcher_go = launchers[3];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.J ) ) {
+			launcher_go = launchers[4];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.K ) ) {
+			launcher_go = launchers[5];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.L ) ) {
+			launcher_go = launchers[6];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+		if ( Input.GetKeyDown( KeyCode.Semicolon ) ) {
+			launcher_go = launchers[7];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.LaunchOneShell();
+			}
+		}
+	}
+
 	private void InitializeFireworkLaunchers()
 	{
 		for ( int i = 0; i < 8; ++i ) {
@@ -113,6 +207,28 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		if ( launcher_go.GetComponent( typeof(CustomizationSceneLauncher ) ) ) {
 			CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
 			launcher_script.PlayParticleSystem();
+		}
+	}
+
+	private void StopAllLaunchers()
+	{
+		for ( int i = 0; i < 8; ++i ) {
+			GameObject launcher_go = launchers[i];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.StopParticleSystem();
+			}
+		}
+	}
+
+	private void SetStarVisibilityForAllLaunchers( bool display_star )
+	{
+		for ( int i = 0; i < 8; ++i ) {
+			GameObject launcher_go = launchers[i];
+			if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
+				CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+				launcher_script.SetStarVisibility( display_star );
+			}
 		}
 	}
 }
