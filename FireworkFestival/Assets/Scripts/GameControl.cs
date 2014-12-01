@@ -12,8 +12,13 @@ public class GameControl : MonoBehaviour
     public GameObject comboText;
     public GameObject scoreText;
     public GameObject gameoverText;
+    public GameObject hitIndicateText;
 
     public float hitMargin;
+    public float goodHitMargin;
+    public float greatHitMargin;
+
+ 
 
     const float genInterval = 0.5f;
     float elapsedTime;
@@ -175,10 +180,16 @@ public class GameControl : MonoBehaviour
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
-
-            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= hitMargin )
+            float hitDiff = Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x);
+            if ( hitDiff <= hitMargin )
             {
-                
+                if (hitDiff <= greatHitMargin)
+                    hitIndicateText.GetComponent<hitIndicate>().Show("Great");
+                else if (hitDiff <= goodHitMargin)
+                    hitIndicateText.GetComponent<hitIndicate>().Show("Good");
+                else
+                    hitIndicateText.GetComponent<hitIndicate>().Show("OK");
+
                 hitResp.PlayHitEffect();
                 isHit = true;
 
@@ -192,14 +203,16 @@ public class GameControl : MonoBehaviour
         if (!isHit)
         {
             comboCount = 0;
-            comboText.GetComponent<TextMesh>().text = "Break!";
+            comboText.GetComponent<TextMesh>().text = "0";
+            hitIndicateText.GetComponent<hitIndicate>().Show("Miss");
+
             guiController.IncreLiveBar(-1);
 
             if (guiController.IsLiveZero())
             {
                 bGameOver = true;
 
-                gameoverText.active = true;
+                gameoverText.SetActive(true);
                 gameOverElapsedTime = gameOverTime;
 
                 SaveHighScore();
@@ -210,7 +223,7 @@ public class GameControl : MonoBehaviour
             ++comboCount;
             score += 100 * (1+comboCount);
             scoreText.GetComponent<TextMesh>().text = "Score:" + score;
-            comboText.GetComponent<TextMesh>().text = "Combo: "+comboCount;
+            comboText.GetComponent<TextMesh>().text = ""+comboCount;
             guiController.IncreLiveBar(1);
         }
 
