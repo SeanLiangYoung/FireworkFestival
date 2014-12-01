@@ -187,7 +187,8 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		launcher_particle_correspondences[curr_launcher_index] = curr_particle_index;
         
         //Store the firework index for cross-scene access
-        PlayerPrefs.SetInt( curr_launcher_index.ToString(), curr_launcher_index);
+        PlayerPrefs.SetInt( curr_launcher_index.ToString(), curr_particle_index);
+
 		GameObject launcher_go = launchers[curr_launcher_index];
 		if ( launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) ) ) {
 			CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );

@@ -35,6 +35,7 @@ public class MenuButton : MonoBehaviour {
 		if (!string.IsNullOrEmpty(songName)) {
 			SceneProperties.currentSongName=songName;
 		}
+        PlayerPrefs.Save();
 		Application.LoadLevel (sceneName); 
 	}
 	// Update is called once per frame

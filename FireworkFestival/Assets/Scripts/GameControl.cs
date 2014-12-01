@@ -33,6 +33,8 @@ public class GameControl : MonoBehaviour
     uint comboCount;
     uint score;
 
+    int numBeatDuration;
+
     bool bStartPlayback = false;
     bool bGameOver = false;
 	bool levelLoaded = false;
@@ -59,6 +61,7 @@ public class GameControl : MonoBehaviour
 		BeatCreator.Instance.CreateBeats();
 		
 		beatDurations = BeatCreator.Instance.beatDurations;
+        numBeatDuration = beatDurations.Count;
 		elapsedTime = beatDurations[currentBeatIdx++];
 		levelLoaded = true;
 
@@ -81,7 +84,10 @@ public class GameControl : MonoBehaviour
             if (elapsedTime <= 0.0 )
             {
                 //elapsedTime = genInterval;
-                elapsedTime += beatDurations[currentBeatIdx++];
+                if (currentBeatIdx < numBeatDuration)
+                    elapsedTime += beatDurations[currentBeatIdx++];
+                else
+                    bGameOver = true;
              
                 //if (currentBeatIdx % 20 == 0)
                 {
@@ -100,13 +106,7 @@ public class GameControl : MonoBehaviour
         }
     }
 
-    void OnLevelWasLoaded(int level)
-    {
-        if (level == 4) //Game level 1
-        {
-            Debug.Log("Loaded");
-        }
-    }
+
 
     void CheckMissed()
     {
@@ -178,6 +178,7 @@ public class GameControl : MonoBehaviour
             return 0;
         
         bool isHit = false;
+        uint hitLevel = 0;
         HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
         Vector3 hitPosition = hitWindow.transform.position;
         GUIController guiController = gameObject.GetComponent<GUIController>();
@@ -192,11 +193,20 @@ public class GameControl : MonoBehaviour
             if ( hitDiff <= hitMargin )
             {
                 if (hitDiff <= greatHitMargin)
+                {
                     hitIndicateText.GetComponent<hitIndicate>().Show("Great");
+                    hitLevel = 3;
+                }
                 else if (hitDiff <= goodHitMargin)
+                {
                     hitIndicateText.GetComponent<hitIndicate>().Show("Good");
+                    hitLevel = 2;
+                }
                 else
+                {
                     hitIndicateText.GetComponent<hitIndicate>().Show("OK");
+                    hitLevel = 1;
+                }
 
                 hitResp.PlayHitEffect();
                 isHit = true;
@@ -235,7 +245,7 @@ public class GameControl : MonoBehaviour
             guiController.IncreLiveBar(1);
         }
 
-        return comboCount;
+        return hitLevel;
     }
 
     void SaveHighScore()

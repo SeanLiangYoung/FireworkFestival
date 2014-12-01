@@ -5,17 +5,17 @@ public class Launcher : MonoBehaviour
 {
 	public GameObject[] particles;
 	public int particle_index;
-
+    public int height_level;
 	private GameObject current_go;
 
 	public void Launch( int num_shells )
 	{
-		GameObject particle_go = particles[particle_index];
+		GameObject particle_go = particles[particle_index + height_level*8];
 		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {
-			if ( !current_go ) {
+			//if ( !current_go ) {
 				GameObject go = ( GameObject )Instantiate( particle_go, this.transform.position, this.transform.rotation );
 				current_go = go;
-			}
+			//}
 
 			ParticleSystem ps = ( ParticleSystem )current_go.GetComponent( typeof( ParticleSystem ) );
 			ps.Emit( num_shells );
