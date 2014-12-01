@@ -21,11 +21,12 @@ public class InputControl : MonoBehaviour {
         GameControl gameCtrl = gameController.GetComponent<GameControl>();
         LauncherManager launchScript = launchMgr.GetComponent<LauncherManager>();
 
+        uint combo = 0;
 		if( Input.GetButtonDown( "Firework1" ) )
 		{
             gameCtrl.PressHitButton(1);
-            if( gameCtrl.CheckLastNote() )
-                launchScript.LaunchFireworks('A', 1);
+            if( (combo = gameCtrl.CheckLastNote()) > 0 )
+                launchScript.LaunchFireworks('A', (int)combo/3+1 );
 		}
 		else if( Input.GetButtonUp ( "Firework1" ) )
 		{
@@ -34,8 +35,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework2"))
         {
             gameCtrl.PressHitButton(2);
-            if( gameCtrl.CheckLastNote() )
-                launchScript.LaunchFireworks('S', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0)
+                launchScript.LaunchFireworks('S', (int)combo / 3 + 1 );
         }
         else if (Input.GetButtonUp("Firework2"))
         {
@@ -44,8 +45,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework3"))
         {
             gameCtrl.PressHitButton(3);
-            if( gameCtrl.CheckLastNote() )
-                launchScript.LaunchFireworks('D', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0)
+                launchScript.LaunchFireworks('D', (int)combo / 3 + 1);
         }
         else if (Input.GetButtonUp("Firework3"))
         {
@@ -54,8 +55,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework4"))
         {
             gameCtrl.PressHitButton(4);
-            if (gameCtrl.CheckLastNote())
-                launchScript.LaunchFireworks('F', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0 )
+                launchScript.LaunchFireworks('F', (int)combo / 3 + 1);
         }
         else if (Input.GetButtonUp("Firework4"))
         {
@@ -64,8 +65,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework5"))
         {
             gameCtrl.PressHitButton(5);
-            if (gameCtrl.CheckLastNote())
-                launchScript.LaunchFireworks('J', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0)
+                launchScript.LaunchFireworks('J', (int)combo / 3 + 1);
         }
         else if (Input.GetButtonUp("Firework5"))
         {
@@ -74,8 +75,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework6"))
         {
             gameCtrl.PressHitButton(6);
-            if (gameCtrl.CheckLastNote())
-                launchScript.LaunchFireworks('K', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0)
+                launchScript.LaunchFireworks('K', (int)combo / 3 + 1);
         }
         else if (Input.GetButtonUp("Firework6"))
         {
@@ -84,8 +85,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework7"))
         {
             gameCtrl.PressHitButton(7);
-            if (gameCtrl.CheckLastNote())
-                launchScript.LaunchFireworks('L', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0)
+                launchScript.LaunchFireworks('L', (int)combo / 3 + 1);
         }
         else if (Input.GetButtonUp("Firework7"))
         {
@@ -94,8 +95,8 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework8"))
         {
             gameCtrl.PressHitButton(8);
-            if (gameCtrl.CheckLastNote())
-                launchScript.LaunchFireworks(';', 1);
+            if ((combo = gameCtrl.CheckLastNote()) > 0)
+                launchScript.LaunchFireworks(';', (int)combo / 3 + 1);
         }
         else if (Input.GetButtonUp("Firework8"))
         {

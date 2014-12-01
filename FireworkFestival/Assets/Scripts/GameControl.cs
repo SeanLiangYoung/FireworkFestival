@@ -100,6 +100,14 @@ public class GameControl : MonoBehaviour
         }
     }
 
+    void OnLevelWasLoaded(int level)
+    {
+        if (level == 4) //Game level 1
+        {
+            Debug.Log("Loaded");
+        }
+    }
+
     void CheckMissed()
     {
         while (true)
@@ -164,10 +172,10 @@ public class GameControl : MonoBehaviour
     }
 
 
-    public bool CheckLastNote()
+    public uint CheckLastNote()
     {
         if (bGameOver)
-            return false;
+            return 0;
         
         bool isHit = false;
         HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
@@ -227,7 +235,7 @@ public class GameControl : MonoBehaviour
             guiController.IncreLiveBar(1);
         }
 
-        return isHit;
+        return comboCount;
     }
 
     void SaveHighScore()
