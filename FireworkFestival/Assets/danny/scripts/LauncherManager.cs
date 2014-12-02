@@ -5,7 +5,6 @@ public class LauncherManager : MonoBehaviour
 {
 	public GameObject[] launchers;
 
-    int height_level = 0;
 
 	public void LaunchFireworks( char c, int num_shells, int lv )
 	{
@@ -36,8 +35,7 @@ public class LauncherManager : MonoBehaviour
 			launcher_index = 7;
 		}
 
-		LaunchFireworks( launcher_index, num_shells );
-        height_level = lv;
+		LaunchFireworks( launcher_index, num_shells, lv );
 	}
 
     public void SetFireworkType(int launcher_index, int firework_index)
@@ -47,15 +45,14 @@ public class LauncherManager : MonoBehaviour
         launcher_script.particle_index = firework_index;
     }
 	
-	private void LaunchFireworks( int launcher_index, int num_shells)
+	private void LaunchFireworks( int launcher_index, int num_shells, int height_level)
 	{
 		GameObject launcher_go = launchers[launcher_index];
 		if ( launcher_go.GetComponent( typeof( Launcher ) ) ) {
 
 			Launcher launcher_script = ( Launcher )launcher_go.GetComponent( typeof( Launcher ) );
-            launcher_script.height_level = height_level;
 
-			launcher_script.Launch( num_shells );
+            launcher_script.Launch(num_shells, height_level);
             
 		}
 	}
