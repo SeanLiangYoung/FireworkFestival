@@ -6,8 +6,9 @@ public class GameControl : MonoBehaviour
 {
     enum NOTETYPE { SINGLE, CONTINUOUS };
 
-    public GameObject noteType1;
-    public GameObject noteType2;
+    public GameObject[] noteTypes;
+    
+
     public GameObject hitWindow;
 
     public GameObject comboText;
@@ -91,11 +92,12 @@ public class GameControl : MonoBehaviour
                     elapsedTime += beatDurations[currentBeatIdx++];
                 else
                     bGameOver = true;
-             
-                if (Random.value < 0.5)
-                    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-                else
-                    SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
+
+                //if (Random.value < 0.5)
+                //    SpawnNote(0, new Vector3(15.0f, 0.0f, 0.0f));
+                //else
+                //    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
+                SpawnNote( (int) Mathf.Clamp( Random.value*8, 0.0f, 7.0f ), new Vector3(15.0f, 0.0f, 0.0f));
 
                 //Randomly set the note mode to single or continuous
                 if (currentNoteType == NOTETYPE.SINGLE)
@@ -105,6 +107,7 @@ public class GameControl : MonoBehaviour
                 }
                 else
                 {
+
                 }
             }
 
@@ -155,13 +158,11 @@ public class GameControl : MonoBehaviour
     void SpawnNote(int type, Vector3 pos)
     {
         GameObject aNote;
-        if (type == 1)
-            aNote = GameObject.Instantiate(noteType1) as GameObject;
-        else
-            aNote = GameObject.Instantiate(noteType2) as GameObject;
+
+        aNote = GameObject.Instantiate(noteTypes[type]) as GameObject;
 
         aNote.transform.position = pos;
-
+        aNote.GetComponent<Note>().Type = type;
         notes.AddLast(aNote);
     }
 
@@ -181,7 +182,7 @@ public class GameControl : MonoBehaviour
     }
 
 
-    public uint CheckLastNote()
+    public uint CheckLastNote( int key )
     {
         if (bGameOver)
             return 0;
@@ -198,6 +199,9 @@ public class GameControl : MonoBehaviour
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
+            if (noteScript.Type != key)
+                break;
+                
             float hitDiff = Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x);
             if ( hitDiff <= hitMargin )
             {

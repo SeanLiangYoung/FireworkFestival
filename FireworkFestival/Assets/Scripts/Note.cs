@@ -3,6 +3,10 @@ using System.Collections;
 
 public class Note : MonoBehaviour {
 
+
+    int type;
+    
+
 	Vector3 velocity;
 	// Use this for initialization
 	void Start () {
@@ -24,4 +28,10 @@ public class Note : MonoBehaviour {
 	{
 		Destroy( gameObject );
 	}
+
+    public int Type
+    {
+        get { return type; }
+        set { type = value;  }
+    }
 }
