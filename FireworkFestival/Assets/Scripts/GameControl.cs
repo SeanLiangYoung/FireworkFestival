@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GameControl : MonoBehaviour
 {
+    enum NOTETYPE { SINGLE, CONTINUOUS };
 
     public GameObject noteType1;
     public GameObject noteType2;
@@ -18,7 +19,6 @@ public class GameControl : MonoBehaviour
     public float goodHitMargin;
     public float greatHitMargin;
 
- 
 
     const float genInterval = 0.5f;
     float elapsedTime;
@@ -38,6 +38,9 @@ public class GameControl : MonoBehaviour
     bool bStartPlayback = false;
     bool bGameOver = false;
 	bool levelLoaded = false;
+
+    NOTETYPE currentNoteType;
+
     // Use this for initialization
     void Start()
     {
@@ -48,10 +51,11 @@ public class GameControl : MonoBehaviour
 //        currentBeatIdx = 0;
 //
 //        elapsedTime = beatDurations[currentBeatIdx++];
-
+        currentNoteType = NOTETYPE.SINGLE;
         comboText.GetComponent<TextMesh>().text = "";
-		StartCoroutine ("StartGame");
 
+		StartCoroutine ("StartGame");
+        
     }
 
 	public IEnumerator StartGame () {
@@ -83,19 +87,24 @@ public class GameControl : MonoBehaviour
             elapsedTime -= Time.deltaTime;
             if (elapsedTime <= 0.0 )
             {
-                //elapsedTime = genInterval;
                 if (currentBeatIdx < numBeatDuration)
                     elapsedTime += beatDurations[currentBeatIdx++];
                 else
                     bGameOver = true;
              
-                //if (currentBeatIdx % 20 == 0)
+                if (Random.value < 0.5)
+                    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
+                else
+                    SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
+
+                //Randomly set the note mode to single or continuous
+                if (currentNoteType == NOTETYPE.SINGLE)
                 {
-                    if (Random.value < 0.5)
-                        SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-                    else
-                        SpawnNote(2, new Vector3(15.0f, 0.0f, 0.0f));
-               
+                    if (Random.value < 0.1f)
+                        currentNoteType = NOTETYPE.CONTINUOUS;
+                }
+                else
+                {
                 }
             }
 
