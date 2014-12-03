@@ -44,7 +44,7 @@ public class HitResponse : MonoBehaviour {
 
 	public void Hit()
 	{
-	    if( stat == Status.RELEASE )
+	    //if( stat == Status.RELEASE )
 		{
 			stat = Status.PRESS;
 			gameObject.transform.localScale = scale*0.9f;

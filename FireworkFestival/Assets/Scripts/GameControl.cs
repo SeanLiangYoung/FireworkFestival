@@ -12,8 +12,13 @@ public class GameControl : MonoBehaviour
     public GameObject comboText;
     public GameObject scoreText;
     public GameObject gameoverText;
+    public GameObject hitIndicateText;
 
     public float hitMargin;
+    public float goodHitMargin;
+    public float greatHitMargin;
+
+ 
 
     const float genInterval = 0.5f;
     float elapsedTime;
@@ -27,6 +32,8 @@ public class GameControl : MonoBehaviour
     int currentBeatIdx;
     uint comboCount;
     uint score;
+
+    int numBeatDuration;
 
     bool bStartPlayback = false;
     bool bGameOver = false;
@@ -54,6 +61,7 @@ public class GameControl : MonoBehaviour
 		BeatCreator.Instance.CreateBeats();
 		
 		beatDurations = BeatCreator.Instance.beatDurations;
+        numBeatDuration = beatDurations.Count;
 		elapsedTime = beatDurations[currentBeatIdx++];
 		levelLoaded = true;
 
@@ -76,7 +84,10 @@ public class GameControl : MonoBehaviour
             if (elapsedTime <= 0.0 )
             {
                 //elapsedTime = genInterval;
-                elapsedTime += beatDurations[currentBeatIdx++];
+                if (currentBeatIdx < numBeatDuration)
+                    elapsedTime += beatDurations[currentBeatIdx++];
+                else
+                    bGameOver = true;
              
                 //if (currentBeatIdx % 20 == 0)
                 {
@@ -94,6 +105,8 @@ public class GameControl : MonoBehaviour
                 CheckPlayback();
         }
     }
+
+
 
     void CheckMissed()
     {
@@ -159,12 +172,13 @@ public class GameControl : MonoBehaviour
     }
 
 
-    public bool CheckLastNote()
+    public uint CheckLastNote()
     {
         if (bGameOver)
-            return false;
+            return 0;
         
         bool isHit = false;
+        uint hitLevel = 0;
         HitResponse hitResp = hitWindow.GetComponent<HitResponse>();
         Vector3 hitPosition = hitWindow.transform.position;
         GUIController guiController = gameObject.GetComponent<GUIController>();
@@ -175,10 +189,25 @@ public class GameControl : MonoBehaviour
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
-
-            if (Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x) <= hitMargin )
+            float hitDiff = Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x);
+            if ( hitDiff <= hitMargin )
             {
-                
+                if (hitDiff <= greatHitMargin)
+                {
+                    hitIndicateText.GetComponent<hitIndicate>().Show("Great");
+                    hitLevel = 3;
+                }
+                else if (hitDiff <= goodHitMargin)
+                {
+                    hitIndicateText.GetComponent<hitIndicate>().Show("Good");
+                    hitLevel = 2;
+                }
+                else
+                {
+                    hitIndicateText.GetComponent<hitIndicate>().Show("OK");
+                    hitLevel = 1;
+                }
+
                 hitResp.PlayHitEffect();
                 isHit = true;
 
@@ -192,14 +221,16 @@ public class GameControl : MonoBehaviour
         if (!isHit)
         {
             comboCount = 0;
-            comboText.GetComponent<TextMesh>().text = "Break!";
+            comboText.GetComponent<TextMesh>().text = "0";
+            hitIndicateText.GetComponent<hitIndicate>().Show("Miss");
+
             guiController.IncreLiveBar(-1);
 
             if (guiController.IsLiveZero())
             {
                 bGameOver = true;
 
-                gameoverText.active = true;
+                gameoverText.SetActive(true);
                 gameOverElapsedTime = gameOverTime;
 
                 SaveHighScore();
@@ -210,11 +241,11 @@ public class GameControl : MonoBehaviour
             ++comboCount;
             score += 100 * (1+comboCount);
             scoreText.GetComponent<TextMesh>().text = "Score:" + score;
-            comboText.GetComponent<TextMesh>().text = "Combo: "+comboCount;
+            comboText.GetComponent<TextMesh>().text = ""+comboCount;
             guiController.IncreLiveBar(1);
         }
 
-        return isHit;
+        return hitLevel;
     }
 
     void SaveHighScore()
