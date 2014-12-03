@@ -199,8 +199,8 @@ public class GameControl : MonoBehaviour
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
-            if (noteScript.Type != key)
-                break;
+            //if (noteScript.Type != key)
+            //    continue;
                 
             float hitDiff = Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x);
             if ( hitDiff <= hitMargin )
