@@ -85,7 +85,7 @@ public class GameControl : MonoBehaviour
         }
         else if (levelLoaded)
         {
-            elapsedTime -= Time.deltaTime;
+			elapsedTime -= Time.deltaTime;
             if (elapsedTime <= 0.0 )
             {
                 if (currentBeatIdx < numBeatDuration)
@@ -97,7 +97,13 @@ public class GameControl : MonoBehaviour
                 //    SpawnNote(0, new Vector3(15.0f, 0.0f, 0.0f));
                 //else
                 //    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-                SpawnNote( (int) Mathf.Clamp( Random.value*8, 0.0f, 7.0f ), new Vector3(15.0f, 0.0f, 0.0f));
+					GameObject aNote = SpawnNote( (int) Mathf.Clamp( Random.value*8, 0.0f, 7.0f ), new Vector3(15.0f, 0.0f, 0.0f));
+				//LauncherManager.Instance.LaunchFireworks('A', 2, 4);
+				
+				if (currentBeatIdx>2) {
+					LauncherManager.Instance.LaunchFireworks(';', 1, (int)1 );
+				}
+
 
                 //Randomly set the note mode to single or continuous
                 if (currentNoteType == NOTETYPE.SINGLE)
@@ -155,7 +161,7 @@ public class GameControl : MonoBehaviour
         }
     }
 
-    void SpawnNote(int type, Vector3 pos)
+    GameObject SpawnNote(int type, Vector3 pos)
     {
         GameObject aNote;
 
@@ -164,6 +170,7 @@ public class GameControl : MonoBehaviour
         aNote.transform.position = pos;
         aNote.GetComponent<Note>().Type = type;
         notes.AddLast(aNote);
+		return aNote;
     }
 
     public void PressHitButton( int no )

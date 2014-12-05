@@ -2,5 +2,5 @@
 using System.Collections;
 
 public static class SceneProperties {
-	public static string currentSongName;
+	public static string currentSongName = "SteelRods";
 }

@@ -4,6 +4,18 @@ using System.Collections;
 public class LauncherManager : MonoBehaviour
 {
 	public GameObject[] launchers;
+	public static LauncherManager instance;
+
+	public static LauncherManager Instance
+	{
+		get 
+		{
+			return instance;
+		}
+	}
+	void Awake () {
+		instance = this;
+	}
 
 
 	public void LaunchFireworks( char c, int num_shells, int lv )
