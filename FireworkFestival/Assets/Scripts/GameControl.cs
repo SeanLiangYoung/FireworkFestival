@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,7 +6,7 @@ public class GameControl : MonoBehaviour
 {
     enum NOTETYPE { SINGLE, CONTINUOUS };
 
-    public GameObject[] noteTypes;
+    public Note[] noteTypes;
     
 
     public GameObject hitWindow;
@@ -26,7 +26,7 @@ public class GameControl : MonoBehaviour
     float gameOverTime = 2.0f;
     float gameOverElapsedTime;
 
-    LinkedList<GameObject> notes;
+    LinkedList<Note> notes;
 
     List<float> beatDurations;
 
@@ -46,7 +46,7 @@ public class GameControl : MonoBehaviour
     void Start()
     {
         //elapsedTime = genInterval;
-        notes = new LinkedList<GameObject>();
+        notes = new LinkedList<Note>();
 //        beatDurations = BeatCreator.instance.beatDurations;
 //
 //        currentBeatIdx = 0;
@@ -69,9 +69,15 @@ public class GameControl : MonoBehaviour
         numBeatDuration = beatDurations.Count;
 		elapsedTime = beatDurations[currentBeatIdx++];
 		levelLoaded = true;
+		bStartPlayback = true;
+		//BeatCreator.instance.PlaySong();
 
 	}
 
+
+	private float _startSongDelay = 1.5f;
+	private float _startAdjustment = 1000.0f;
+	private bool _songStarted = false;
     void Update()
     {
         if (bGameOver)
@@ -85,6 +91,10 @@ public class GameControl : MonoBehaviour
         }
         else if (levelLoaded)
         {
+			if (!_songStarted && Time.time - _startAdjustment >= _startSongDelay) {
+				BeatCreator.instance.PlaySong();
+				_songStarted = true;
+			}
 			elapsedTime -= Time.deltaTime;
             if (elapsedTime <= 0.0 )
             {
@@ -97,11 +107,14 @@ public class GameControl : MonoBehaviour
                 //    SpawnNote(0, new Vector3(15.0f, 0.0f, 0.0f));
                 //else
                 //    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-					GameObject aNote = SpawnNote( (int) Mathf.Clamp( Random.value*8, 0.0f, 7.0f ), new Vector3(15.0f, 0.0f, 0.0f));
+					Note aNote = SpawnNote( Random.Range(0,7), new Vector3(15.0f, 0.0f, 0.0f));
 				//LauncherManager.Instance.LaunchFireworks('A', 2, 4);
+				LauncherManager.Instance.LaunchFireworks(';', 1, (int)1, aNote );
 				
-				if (currentBeatIdx>2) {
-					LauncherManager.Instance.LaunchFireworks(';', 1, (int)1 );
+				if (currentBeatIdx==2) {
+					_startAdjustment = Time.time;
+
+					//StartCoroutine("playSongWithDelay");
 				}
 
 
@@ -119,8 +132,8 @@ public class GameControl : MonoBehaviour
 
             CheckMissed();
 
-            if( !bStartPlayback )
-                CheckPlayback();
+            /*if( !bStartPlayback )
+                CheckPlayback();*/
         }
     }
 
@@ -130,14 +143,17 @@ public class GameControl : MonoBehaviour
     {
         while (true)
         {
-            LinkedListNode<GameObject> aNote = notes.First;
+            LinkedListNode<Note> aNote = notes.First;
             if (aNote != null)
             {
-                if (aNote.Value.transform.position.x < -25.0f)
+                if (aNote.Value.GetElapsedTime(Time.time) > 2.1f) //TODO FIX FOR NEW THING
                 {
                     //Note noteScript = aNote.Value.GetComponent<Note>();
-                    notes.RemoveFirst();
-                    Destroy(aNote.Value);
+					notes.RemoveFirst();//(aNote);
+                    //Destroy(aNote.Value);
+					
+					//Note noteScript = aNote.Value.GetComponent<Note>();
+					aNote.Value.Die();
                 }
                 else break;
             }
@@ -149,27 +165,35 @@ public class GameControl : MonoBehaviour
 
     void CheckPlayback()
     {
-        LinkedListNode<GameObject> aNote = notes.First;
+        LinkedListNode<Note> aNote = notes.First;
         if (aNote != null)
         {
             Vector3 hitPosition = hitWindow.transform.position;
             if ( hitPosition.x >= aNote.Value.transform.position.x-.8f )
             {
                 bStartPlayback = true;
-                BeatCreator.instance.PlaySong();
+                //BeatCreator.instance.PlaySong();
+				StartCoroutine("playSongWithDelay");
             }
         }
     }
 
-    GameObject SpawnNote(int type, Vector3 pos)
-    {
-        GameObject aNote;
+	private IEnumerator playSongWithDelay () {
+		float MAX_DELAY = 2.0f;
+		yield return new WaitForSeconds(MAX_DELAY);
+		BeatCreator.instance.PlaySong();
 
-        aNote = GameObject.Instantiate(noteTypes[type]) as GameObject;
+	}
+    Note SpawnNote(int type, Vector3 pos)
+    {
+        Note aNote;
+
+        aNote = GameObject.Instantiate(noteTypes[type]) as Note;
 
         aNote.transform.position = pos;
         aNote.GetComponent<Note>().Type = type;
         notes.AddLast(aNote);
+		aNote.startTime = Time.time;
 		return aNote;
     }
 
@@ -201,7 +225,7 @@ public class GameControl : MonoBehaviour
         GUIController guiController = gameObject.GetComponent<GUIController>();
 
         //Get the leftmost note, if available
-        LinkedListNode<GameObject> aNote = notes.First;
+        LinkedListNode<Note> aNote = notes.First;
         while (aNote != null)
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
@@ -209,7 +233,7 @@ public class GameControl : MonoBehaviour
             //if (noteScript.Type != key)
             //    continue;
                 
-            float hitDiff = Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x);
+            float hitDiff = noteScript.GetHitDiff(Time.time);//= Mathf.Abs(hitPosition.x - aNote.Value.transform.position.x); // TODO
             if ( hitDiff <= hitMargin )
             {
                 if (hitDiff <= greatHitMargin)
