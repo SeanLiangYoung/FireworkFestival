@@ -16,6 +16,9 @@ public class Note : MonoBehaviour {
 	private float noteScale = 4.0f;
 
 	private float scaleInterval = .04f;
+
+	public ParticleSystem.Particle particle;
+	private ParticleSystem.Particle _compareParticle;
     
 
 	Vector3 velocity;
@@ -25,6 +28,8 @@ public class Note : MonoBehaviour {
 		duration = 2.0f;
 		velocity = new Vector3( 0.13f, 0.0f, 0.0f );
 		gameObject.transform.localScale = new Vector3(noteScale, noteScale, noteScale);
+		//particle = new ParticleSystem.Particle();
+		//_compareParticle = particle;
 	}
 
 	void FixedUpdate()
@@ -40,14 +45,24 @@ public class Note : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(ParticleSystem.Particle.Equals(_compareParticle,particle)) {
+			Debug.LogError("here");
+			Die ();
+		}
 	}
 
 	public void Die()
 	{
 		if (notes!=null) {
-			notes.Remove(this);
+			//notes.Remove(this);
 		}
 		Destroy( gameObject );
+	}
+
+	public void Disappear() {
+		if (this!= null) {
+			this.renderer.enabled = false;
+		}
 	}
 
     public int Type

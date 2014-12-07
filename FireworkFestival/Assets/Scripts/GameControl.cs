@@ -107,7 +107,7 @@ public class GameControl : MonoBehaviour
                 //    SpawnNote(0, new Vector3(15.0f, 0.0f, 0.0f));
                 //else
                 //    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
-					Note aNote = SpawnNote( Random.Range(0,7), new Vector3(15.0f, 0.0f, 0.0f));
+					Note aNote = SpawnNote( Random.Range(0,noteTypes.Length-1), new Vector3(15.0f, 0.0f, 0.0f));
 				//LauncherManager.Instance.LaunchFireworks('A', 2, 4);
 				LauncherManager.Instance.LaunchFireworks(';', 1, (int)1, aNote );
 				
@@ -153,7 +153,7 @@ public class GameControl : MonoBehaviour
                     //Destroy(aNote.Value);
 					
 					//Note noteScript = aNote.Value.GetComponent<Note>();
-					aNote.Value.Die();
+					aNote.Value.Disappear();
                 }
                 else break;
             }
@@ -226,7 +226,7 @@ public class GameControl : MonoBehaviour
 
         //Get the leftmost note, if available
         LinkedListNode<Note> aNote = notes.First;
-        while (aNote != null)
+        while (aNote != null && aNote.Value!= null)
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
 
@@ -256,7 +256,8 @@ public class GameControl : MonoBehaviour
                 isHit = true;
 
                 notes.Remove(aNote);
-                noteScript.Die();
+                //noteScript.Die();
+				aNote.Value.Disappear();
                 break;
             }
    

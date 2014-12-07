@@ -13,8 +13,6 @@ public class Launcher : MonoBehaviour
 
 	private GameObject current_go;
 
-	public GameObject fun;
-
 	private ParticleSystem ps;
 	/// <summary>
 	/// Awake this instance.
@@ -39,23 +37,38 @@ public class Launcher : MonoBehaviour
 			if (note != null) { 
 				noteObjects.Add(note);
 				note.notes = noteObjects;
+				int length = ps.GetParticles(currentParticles);
+				note.particle = currentParticles[length-1];
+				previousLength++;
 			}
 		}
 	}
 
+	private int previousLength = 0;
 	/// <summary>
 	/// Update this instance.
 	/// </summary>
 	void Update() {
 		
 		if (ps!=null) {
-			int length = ps.GetParticles(currentParticles); int i = 0;
-			//Debug.LogError(length);
-			while (fun != null && i < length) {
+			int length = ps.GetParticles(currentParticles);
+			int i = 0;
+			if (length < previousLength) {
+				int deleteNumber = previousLength - length;
+				for (int j = 0; j < deleteNumber; j ++) {
+					if (j < noteObjects.Count) {
+						noteObjects[j].Die();
+					}
+				}
+				if (deleteNumber <= noteObjects.Count) {
+					noteObjects.RemoveRange(0,deleteNumber);
+				}
+			}
+			previousLength = length;
+			while ( i < length) {
 				for (int j = 0; j < noteObjects.Count; j++) {
 					noteObjects[j].transform.position = currentParticles[j].position;
 				}
-				//fun.transform.position = currentParticles[0].position;
 				i++;
 			}
 		}
