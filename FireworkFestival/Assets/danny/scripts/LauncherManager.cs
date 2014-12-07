@@ -18,11 +18,11 @@ public class LauncherManager : MonoBehaviour
 	}
 
 
-	public void LaunchFireworks( char c, int num_shells, int lv,Note note = null)
+	public void LaunchFireworks(int num_shells, int lv,Note note = null)
 	{
-		int launcher_index = 0;
+		int launcher_index = Random.Range(0,launchers.Length-1);
 
-		if ( c == 'A' ) {
+		/*if ( c == 'A' ) {
 			launcher_index = 0;
 		}
 		else if ( c == 'S' ) {
@@ -45,7 +45,8 @@ public class LauncherManager : MonoBehaviour
 		}
 		else if ( c == ';' ) {
 			launcher_index = 7;
-		}
+		}*/
+
 
 		LaunchFireworks( launcher_index, num_shells, lv, note);
 	}

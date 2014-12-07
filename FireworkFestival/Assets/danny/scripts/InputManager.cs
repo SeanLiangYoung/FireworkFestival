@@ -9,7 +9,7 @@ public class InputManager : MonoBehaviour
 	{
 		int num_shells = 1;
 
-		if ( Input.GetKeyDown( KeyCode.A ) ) {
+		/*if ( Input.GetKeyDown( KeyCode.A ) ) {
 			launcher_manager.LaunchFireworks( 'A', num_shells, 0 );
 		}
 		if ( Input.GetKeyDown( KeyCode.S ) ) {
@@ -32,6 +32,6 @@ public class InputManager : MonoBehaviour
 		}
 		if ( Input.GetKeyDown( KeyCode.Semicolon ) ) {
             launcher_manager.LaunchFireworks(';', num_shells, 0);
-		}
+		}*/
 	}
 }
