@@ -109,7 +109,7 @@ public class GameControl : MonoBehaviour
                 //    SpawnNote(1, new Vector3(15.0f, 0.0f, 0.0f));
 					Note aNote = SpawnNote( Random.Range(0,noteTypes.Length-1), new Vector3(15.0f, 0.0f, 0.0f));
 				//LauncherManager.Instance.LaunchFireworks('A', 2, 4);
-				LauncherManager.Instance.LaunchFireworks(';', 1, (int)1, aNote );
+				LauncherManager.Instance.LaunchFireworks(1, 1, aNote );
 				
 				if (currentBeatIdx==2) {
 					_startAdjustment = Time.time;

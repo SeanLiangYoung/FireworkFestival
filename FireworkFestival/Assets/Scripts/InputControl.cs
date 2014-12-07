@@ -41,8 +41,9 @@ public class InputControl : MonoBehaviour {
 		if( Input.GetButtonDown( "Firework1" ) )
 		{
             gameCtrl.PressHitButton(1);
-            if( (heightLv = gameCtrl.CheckLastNote(0)) > 0 )
-                LauncherManager.Instance.LaunchFireworks('A', 2, (int)heightLv);
+            if( (heightLv = gameCtrl.CheckLastNote(0)) > 0 ) {
+                //LauncherManager.Instance.LaunchFireworks('A', 2, (int)heightLv);
+			}
 		}
 		else if( Input.GetButtonUp ( "Firework1" ) )
 		{
@@ -51,8 +52,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework2"))
         {
             gameCtrl.PressHitButton(2);
-            if ((heightLv = gameCtrl.CheckLastNote(1)) > 0)
-				LauncherManager.Instance.LaunchFireworks('S', 2, (int)heightLv );
+            if ((heightLv = gameCtrl.CheckLastNote(1)) > 0){
+				//LauncherManager.Instance.LaunchFireworks('S', 2, (int)heightLv );
+			}
         }
         else if (Input.GetButtonUp("Firework2"))
         {
@@ -61,8 +63,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework3"))
         {
             gameCtrl.PressHitButton(3);
-            if ((heightLv = gameCtrl.CheckLastNote(2)) > 0)
-				LauncherManager.Instance.LaunchFireworks('D', 2, (int)heightLv);
+            if ((heightLv = gameCtrl.CheckLastNote(2)) > 0) {
+				//LauncherManager.Instance.LaunchFireworks('D', 2, (int)heightLv);
+			}
         }
         else if (Input.GetButtonUp("Firework3"))
         {
@@ -71,8 +74,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework4"))
         {
             gameCtrl.PressHitButton(4);
-            if ((heightLv = gameCtrl.CheckLastNote(3)) > 0 )
-				LauncherManager.Instance.LaunchFireworks('F', 2, (int)heightLv );
+            if ((heightLv = gameCtrl.CheckLastNote(3)) > 0 ) {
+				//LauncherManager.Instance.LaunchFireworks('F', 2, (int)heightLv );
+			}
         }
         else if (Input.GetButtonUp("Firework4"))
         {
@@ -81,8 +85,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework5"))
         {
             gameCtrl.PressHitButton(5);
-            if ((heightLv = gameCtrl.CheckLastNote(4)) > 0)
-				LauncherManager.Instance.LaunchFireworks('J', 2, (int)heightLv );
+            if ((heightLv = gameCtrl.CheckLastNote(4)) > 0){
+				//LauncherManager.Instance.LaunchFireworks('J', 2, (int)heightLv );
+			}
         }
         else if (Input.GetButtonUp("Firework5"))
         {
@@ -91,8 +96,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework6"))
         {
             gameCtrl.PressHitButton(6);
-            if ((heightLv = gameCtrl.CheckLastNote(5)) > 0)
-				LauncherManager.Instance.LaunchFireworks('K', 2, (int)heightLv );
+            if ((heightLv = gameCtrl.CheckLastNote(5)) > 0){
+				//LauncherManager.Instance.LaunchFireworks('K', 2, (int)heightLv );
+			}
         }
         else if (Input.GetButtonUp("Firework6"))
         {
@@ -101,8 +107,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework7"))
         {
             gameCtrl.PressHitButton(7);
-            if ((heightLv = gameCtrl.CheckLastNote(6)) > 0)
-				LauncherManager.Instance.LaunchFireworks('L', 2, (int)heightLv );
+            if ((heightLv = gameCtrl.CheckLastNote(6)) > 0) {
+				//LauncherManager.Instance.LaunchFireworks('L', 2, (int)heightLv );
+			}
         }
         else if (Input.GetButtonUp("Firework7"))
         {
@@ -111,8 +118,9 @@ public class InputControl : MonoBehaviour {
         else if (Input.GetButtonDown("Firework8"))
         {
             gameCtrl.PressHitButton(8);
-            if ((heightLv = gameCtrl.CheckLastNote(7)) > 0)
-				LauncherManager.Instance.LaunchFireworks(';', 2, (int)heightLv );
+            if ((heightLv = gameCtrl.CheckLastNote(7)) > 0) {
+				//LauncherManager.Instance.LaunchFireworks(';', 2, (int)heightLv );
+			}
         }
         else if (Input.GetButtonUp("Firework8"))
         {
