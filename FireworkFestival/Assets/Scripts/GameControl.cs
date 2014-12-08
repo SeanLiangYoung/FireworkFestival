@@ -76,7 +76,7 @@ public class GameControl : MonoBehaviour
 	}
 
 
-	private float _startSongDelay = 1.5f;
+	private float _startSongDelay = 1.8f;
 	private float _startAdjustment = 1000.0f;
 	private bool _songStarted = false;
     void Update()
@@ -259,6 +259,7 @@ public class GameControl : MonoBehaviour
                 notes.Remove(aNote);
                 //noteScript.Die();
 				aNote.Value.Disappear(false);
+				aNote.Value.launcher.TriggerExplosion();
                 break;
             }
    

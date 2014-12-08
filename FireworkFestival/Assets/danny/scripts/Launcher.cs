@@ -5,7 +5,10 @@ using System.Collections.Generic;
 public class Launcher : MonoBehaviour
 {
 	public GameObject[] particles;
-	ParticleSystem.Particle[] currentParticles = new ParticleSystem.Particle[1000];
+	public ParticleSystem[] secondaryParticles;
+
+
+	private ParticleSystem.Particle[] currentParticles = new ParticleSystem.Particle[1000];
 	private List<Note> noteObjects;
 
 	private ParticleEmitter _particleEmitter;
@@ -32,7 +35,7 @@ public class Launcher : MonoBehaviour
 			}
 
 			ps = ( ParticleSystem )current_go.GetComponent( typeof( ParticleSystem ) );
-            ps.startLifetime = 1.5f + 0.5f * (height_level-1);
+            //ps.startLifetime = 1.5f + 0.5f * (height_level-1);
 			ps.Emit( num_shells );
 			if (note != null) { 
 				noteObjects.Add(note);
@@ -89,6 +92,16 @@ public class Launcher : MonoBehaviour
 //				ps.SetParticles(newCurrentParticles,length-1);
 //			}
 		}
+	}
+
+	public void TriggerExplosion () {
+		Debug.LogError("here");
+		int length = ps.GetParticles(currentParticles);
+		ParticleSystem secondaryPs = secondaryParticles[particle_index];
+		secondaryPs.gameObject.transform.position = currentParticles[0].position;
+		secondaryPs.Emit(1000);
+		//secondaryPs.Emit(currentParticles[0].position,currentParticles[0].velocity,1000,2.0f,currentParticles[0].color);
+
 	}
 
 	public void DeleteFirework () {

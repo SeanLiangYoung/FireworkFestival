@@ -13,9 +13,9 @@ public class Note : MonoBehaviour {
 
 	public List<Note> notes;
 
-	private float noteScale = 4.0f;
+	private float noteScale = 5.0f;
 
-	private float scaleInterval = .04f;
+	private float scaleInterval = .01f;
 
 	public Launcher launcher;
 
@@ -45,6 +45,7 @@ public class Note : MonoBehaviour {
 		tempScale.y -= scaleInterval;
 		tempScale.z -= scaleInterval;
 		gameObject.transform.localScale = tempScale;
+		scaleInterval +=.001f;
 	}
 	
 	// Update is called once per frame
