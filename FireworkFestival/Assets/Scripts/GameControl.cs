@@ -51,7 +51,13 @@ public class GameControl : MonoBehaviour
     bool bGameOver = false;
 	bool levelLoaded = false;
 
+	public List<AudioSource> boosSounds;
+	public List<AudioSource> cheersSounds;
+	public AudioSource ambientCheer;
+
     NOTETYPE currentNoteType;
+
+
 
     // Use this for initialization
     void Start()
@@ -165,7 +171,7 @@ public class GameControl : MonoBehaviour
             LinkedListNode<Note> aNote = notes.First;
             if (aNote != null)
             {
-                if (aNote.Value.GetElapsedTime(Time.time) >= 1.9f) //TODO FIX FOR NEW THING
+                if (aNote.Value.GetElapsedTime(Time.time) >= 2.0f) //TODO FIX FOR NEW THING
                 {
                     //Note noteScript = aNote.Value.GetComponent<Note>();
 					notes.RemoveFirst();//(aNote);
@@ -173,6 +179,7 @@ public class GameControl : MonoBehaviour
 					
 					//Note noteScript = aNote.Value.GetComponent<Note>();
 					aNote.Value.Disappear(true);
+					MissedNote();
                 }
                 else break;
             }
@@ -288,35 +295,7 @@ public class GameControl : MonoBehaviour
         }
         if (!isHit)
         {
-            comboCount = 0;
-            comboText.GetComponent<TextMesh>().text = "";
-
-            ++numMissHit;
-
-            hitIndicateText.GetComponent<hitIndicate>().Show("Miss");
-
-            guiController.IncreLiveBar(-1);
-
-            if (guiController.IsLiveZero())
-            {
-                bGameOver = true;
-
-                gameoverText.SetActive(true);      
-                gameOverElapsedTime = gameOverTime;
-
-                // Show gold or silver or bronze medal based on
-                // the percentage of great hits, good hits, or ok hits
-                int numTotalHits = numGoodHit + numGreatHit + numOkHit + numMissHit;
-                numTotalHits = (numTotalHits == 0) ? 1 : numTotalHits;
-                if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.75f)
-                    goldMedalLabel.SetActive(true);
-                else if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.5f)
-                    silverMedalLabel.SetActive(true);
-                else
-                    bronzeMedalLabel.SetActive(true);
-
-                SaveHighScore();
-            }
+			MissedNote();
         }
         else
         {
@@ -330,7 +309,11 @@ public class GameControl : MonoBehaviour
             if (comboCount % 5 == 0)
             {
                 comboValueText.GetComponent<ComboValue>().SetText( comboCount.ToString()+"x Bonus");
-                comboValueText.GetComponent<ComboValue>().Show();
+				comboValueText.GetComponent<ComboValue>().Show();
+				int cheerType = Random.Range(0,cheersSounds.Count-1);
+				if (!cheersSounds[cheerType].isPlaying) {
+					StartCoroutine(PlayAudioSourceForDuration(cheersSounds[cheerType],5.0f));
+				}
             }
 
             guiController.IncreLiveBar(1);
@@ -339,6 +322,49 @@ public class GameControl : MonoBehaviour
         return hitLevel;
     }
 
+	IEnumerator PlayAudioSourceForDuration (AudioSource audioSource, float duration) {
+		audioSource.Play();
+		yield return new WaitForSeconds(duration);
+		audioSource.Stop();
+	}
+	private void MissedNote () {
+		int booType = Random.Range(0,boosSounds.Count-1);
+		if (!boosSounds[booType].isPlaying) {
+			StartCoroutine(PlayAudioSourceForDuration(boosSounds[booType],boosSounds[booType].clip.length));
+		}
+
+		GUIController guiController = gameObject.GetComponent<GUIController>();
+		comboCount = 0;
+		comboText.GetComponent<TextMesh>().text = "";
+		
+		++numMissHit;
+		
+		hitIndicateText.GetComponent<hitIndicate>().Show("Miss");
+		
+		guiController.IncreLiveBar(-1);
+		
+		if (guiController.IsLiveZero())
+		{
+			bGameOver = true;
+			
+			gameoverText.SetActive(true);      
+			gameOverElapsedTime = gameOverTime;
+			
+			// Show gold or silver or bronze medal based on
+			// the percentage of great hits, good hits, or ok hits
+			int numTotalHits = numGoodHit + numGreatHit + numOkHit + numMissHit;
+			numTotalHits = (numTotalHits == 0) ? 1 : numTotalHits;
+			if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.75f)
+				goldMedalLabel.SetActive(true);
+			else if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.5f)
+				silverMedalLabel.SetActive(true);
+			else
+				bronzeMedalLabel.SetActive(true);
+			
+			SaveHighScore();
+		}
+
+	}
     void SaveHighScore()
     {
         int highscore1 = PlayerPrefs.GetInt("HG1");
