@@ -47,7 +47,7 @@ public class LauncherManager : MonoBehaviour
 			launcher_index = 7;
 		}*/
 
-		launcher_index = 7;
+		//launcher_index = 7;
 		LaunchFireworks( launcher_index, num_shells, lv, note);
 	}
 

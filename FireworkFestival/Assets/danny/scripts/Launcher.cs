@@ -95,12 +95,13 @@ public class Launcher : MonoBehaviour
 	}
 
 	public void TriggerExplosion () {
-		Debug.LogError("here");
 		int length = ps.GetParticles(currentParticles);
-		ParticleSystem secondaryPs = secondaryParticles[particle_index];
-		secondaryPs.gameObject.transform.position = currentParticles[0].position;
+		ParticleSystem secondaryPs = Instantiate( secondaryParticles[particle_index], currentParticles[0].position, Quaternion.identity ) as ParticleSystem;
+		//secondaryPs.gameObject.transform.position = currentParticles[0].position;
 		secondaryPs.Emit(1000);
-		//secondaryPs.Emit(currentParticles[0].position,currentParticles[0].velocity,1000,2.0f,currentParticles[0].color);
+//		for (int i =0; i < 1000; i ++) {
+//			secondaryPs.Emit(currentParticles[0].position,currentParticles[0].velocity,1.0f,2.0f,currentParticles[0].color);
+//		}
 
 	}
 
