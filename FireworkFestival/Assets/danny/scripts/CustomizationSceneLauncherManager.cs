@@ -16,10 +16,18 @@ public class CustomizationSceneLauncherManager : MonoBehaviour
 		curr_particle_index = 0;
 		prev_launcher_index = 0;
 		curr_launcher_index = 0;
-		launcher_particle_correspondences = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+		launcher_particle_correspondences = new int[] {0, 1, 2, 3, 4, 5, 6, 7};
 		freestyle_mode = false;
 
 		InitializeFireworkLaunchers();
+
+		// Set launcher #5 of 8 to be on at startup.
+		curr_launcher_index = 4;
+		GameObject launcher_go = launchers[curr_launcher_index];
+		if ( launcher_go.GetComponent( typeof(CustomizationSceneLauncher ) ) ) {
+			CustomizationSceneLauncher launcher_script = ( CustomizationSceneLauncher )launcher_go.GetComponent( typeof( CustomizationSceneLauncher ) );
+			launcher_script.PlayParticleSystem();
+		}
 	}
 	
 	void Update()

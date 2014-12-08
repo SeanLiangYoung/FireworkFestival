@@ -11,12 +11,6 @@ public class CustomizationSceneLauncher : MonoBehaviour
 	void Start()
 	{
 		star = gameObject.transform.FindChild( "star" );
-
-		GameObject particle_go = particles[0];
-		if ( particle_go.GetComponent( typeof( ParticleSystem ) ) ) {
-			GameObject go = ( GameObject )Instantiate( particle_go, this.transform.position, this.transform.rotation );
-			current_go = go;
-		}
 	}
 
 	public void SetParticleSystem( int particle_index )
