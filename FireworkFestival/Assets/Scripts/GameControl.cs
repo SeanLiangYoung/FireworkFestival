@@ -248,7 +248,7 @@ public class GameControl : MonoBehaviour
         while (aNote != null && aNote.Value!= null)
         {
             Note noteScript = aNote.Value.GetComponent<Note>();
-
+            hitIndicateText.transform.position = aNote.Value.transform.position + new Vector3(10.0f, 0, 0);
             //if (noteScript.Type != key)
             //    continue;
                 
