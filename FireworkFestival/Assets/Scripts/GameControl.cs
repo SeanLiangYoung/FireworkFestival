@@ -146,14 +146,14 @@ public class GameControl : MonoBehaviour
             LinkedListNode<Note> aNote = notes.First;
             if (aNote != null)
             {
-                if (aNote.Value.GetElapsedTime(Time.time) > 2.1f) //TODO FIX FOR NEW THING
+                if (aNote.Value.GetElapsedTime(Time.time) >= 1.9f) //TODO FIX FOR NEW THING
                 {
                     //Note noteScript = aNote.Value.GetComponent<Note>();
 					notes.RemoveFirst();//(aNote);
                     //Destroy(aNote.Value);
 					
 					//Note noteScript = aNote.Value.GetComponent<Note>();
-					aNote.Value.Disappear();
+					aNote.Value.Disappear(true);
                 }
                 else break;
             }
@@ -257,7 +257,7 @@ public class GameControl : MonoBehaviour
 
                 notes.Remove(aNote);
                 //noteScript.Die();
-				aNote.Value.Disappear();
+				aNote.Value.Disappear(false);
                 break;
             }
    

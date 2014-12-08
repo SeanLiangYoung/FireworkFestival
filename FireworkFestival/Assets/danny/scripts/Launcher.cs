@@ -39,6 +39,7 @@ public class Launcher : MonoBehaviour
 				note.notes = noteObjects;
 				int length = ps.GetParticles(currentParticles);
 				note.particle = currentParticles[length-1];
+				note.launcher = this;
 				previousLength++;
 			}
 		}
@@ -65,12 +66,46 @@ public class Launcher : MonoBehaviour
 				}
 			}
 			previousLength = length;
+			int deletion = -1;
 			while ( i < length) {
 				for (int j = 0; j < noteObjects.Count; j++) {
 					noteObjects[j].transform.position = currentParticles[j].position;
 				}
 				i++;
 			}
+//			
+//			ParticleSystem.Particle[] newCurrentParticles = new ParticleSystem.Particle[1000];
+//			int postDeletion = 0;
+//			if (deletion > -1) {
+//				for (int k = 0; k < length; k++) {
+//					if (k!=deletion) {
+//						newCurrentParticles[k-postDeletion] = currentParticles[k];
+//					} else {
+//						postDeletion = 1;
+//					}
+//				}
+//				previousLength = length-1;
+//				Debug.LogError("did this??");
+//				ps.SetParticles(newCurrentParticles,length-1);
+//			}
 		}
+	}
+
+	public void DeleteFirework () {
+			
+		/*
+		int length = ps.GetParticles(currentParticles);
+		ParticleSystem.Particle[] newCurrentParticles = new ParticleSystem.Particle[1000];
+		int postDeletion = 0;
+		for (int k = 0; k < length-1; k++) {
+			//if (k!=deletion) {
+				newCurrentParticles[k] = currentParticles[k+1];
+			//} else {
+			//	postDeletion = 1;
+			//}
+		}
+		previousLength = length-1;
+		Debug.LogError("did this??");
+		ps.SetParticles(newCurrentParticles,length-1);*/
 	}
 }

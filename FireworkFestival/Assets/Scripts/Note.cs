@@ -17,6 +17,10 @@ public class Note : MonoBehaviour {
 
 	private float scaleInterval = .04f;
 
+	public Launcher launcher;
+
+	public bool deleteMe;
+
 	public ParticleSystem.Particle particle;
 	private ParticleSystem.Particle _compareParticle;
     
@@ -45,10 +49,6 @@ public class Note : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(ParticleSystem.Particle.Equals(_compareParticle,particle)) {
-			Debug.LogError("here");
-			Die ();
-		}
 	}
 
 	public void Die()
@@ -59,9 +59,13 @@ public class Note : MonoBehaviour {
 		Destroy( gameObject );
 	}
 
-	public void Disappear() {
+	public void Disappear(bool andDie) {
 		if (this!= null) {
 			this.renderer.enabled = false;
+			if (andDie) {
+				this.deleteMe = true;
+				//launcher.DeleteFirework();
+			}
 		}
 	}
 
