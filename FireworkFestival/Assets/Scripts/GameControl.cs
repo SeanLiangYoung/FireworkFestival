@@ -11,6 +11,7 @@ public class GameControl : MonoBehaviour
 
     public GameObject hitWindow;
 
+    public GameObject comboValueText;
     public GameObject comboText;
     public GameObject scoreText;
     public GameObject gameoverText;
@@ -54,7 +55,7 @@ public class GameControl : MonoBehaviour
 //        elapsedTime = beatDurations[currentBeatIdx++];
         currentNoteType = NOTETYPE.SINGLE;
         comboText.GetComponent<TextMesh>().text = "";
-
+        comboValueText.GetComponent<TextMesh>().text = "";
 		StartCoroutine ("StartGame");
         
     }
@@ -266,7 +267,8 @@ public class GameControl : MonoBehaviour
         if (!isHit)
         {
             comboCount = 0;
-            comboText.GetComponent<TextMesh>().text = "0";
+            comboText.GetComponent<TextMesh>().text = "";
+
             hitIndicateText.GetComponent<hitIndicate>().Show("Miss");
 
             guiController.IncreLiveBar(-1);
@@ -286,7 +288,16 @@ public class GameControl : MonoBehaviour
             ++comboCount;
             score += 100 * (1+comboCount);
             scoreText.GetComponent<TextMesh>().text = "Score:" + score;
-            comboText.GetComponent<TextMesh>().text = ""+comboCount;
+            comboText.GetComponent<TextMesh>().text = "HIT:"+comboCount;
+
+            //Show special text to indicate 
+            //the player 5x combo has reached
+            if (comboCount % 5 == 0)
+            {
+                comboValueText.GetComponent<ComboValue>().SetText( comboCount.ToString()+"x Bonus");
+                comboValueText.GetComponent<ComboValue>().Show();
+            }
+
             guiController.IncreLiveBar(1);
         }
 
