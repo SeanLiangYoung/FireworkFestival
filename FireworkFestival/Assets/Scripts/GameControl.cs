@@ -17,6 +17,11 @@ public class GameControl : MonoBehaviour
     public GameObject gameoverText;
     public GameObject hitIndicateText;
 
+    public GameObject goldMedalLabel;
+    public GameObject silverMedalLabel;
+    public GameObject bronzeMedalLabel;
+
+
     public float hitMargin;
     public float goodHitMargin;
     public float greatHitMargin;
@@ -24,8 +29,13 @@ public class GameControl : MonoBehaviour
 
     const float genInterval = 0.5f;
     float elapsedTime;
-    float gameOverTime = 2.0f;
+    float gameOverTime = 4.0f;
     float gameOverElapsedTime;
+
+    int numGreatHit;
+    int numGoodHit;
+    int numOkHit;
+    int numMissHit;
 
     LinkedList<Note> notes;
 
@@ -46,7 +56,11 @@ public class GameControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //elapsedTime = genInterval;
+        numGreatHit = 0;
+        numGoodHit = 0;
+        numOkHit = 0;
+        numMissHit = 0;
+
         notes = new LinkedList<Note>();
 //        beatDurations = BeatCreator.instance.beatDurations;
 //
@@ -87,6 +101,10 @@ public class GameControl : MonoBehaviour
             if (gameOverElapsedTime <= 0)
             {
                 //Jump to score ranking scene
+                gameoverText.SetActive(false);
+                goldMedalLabel.SetActive(false);
+                silverMedalLabel.SetActive(false);
+                silverMedalLabel.SetActive(false);
                 Application.LoadLevel("scoreRank");
             }
         }
@@ -241,16 +259,19 @@ public class GameControl : MonoBehaviour
                 {
                     hitIndicateText.GetComponent<hitIndicate>().Show("Great");
                     hitLevel = 3;
+                    ++numGreatHit;
                 }
                 else if (hitDiff <= goodHitMargin)
                 {
                     hitIndicateText.GetComponent<hitIndicate>().Show("Good");
                     hitLevel = 2;
+                    ++numGoodHit;
                 }
                 else
                 {
                     hitIndicateText.GetComponent<hitIndicate>().Show("OK");
                     hitLevel = 1;
+                    ++numOkHit;
                 }
 
                 hitResp.PlayHitEffect();
@@ -270,6 +291,8 @@ public class GameControl : MonoBehaviour
             comboCount = 0;
             comboText.GetComponent<TextMesh>().text = "";
 
+            ++numMissHit;
+
             hitIndicateText.GetComponent<hitIndicate>().Show("Miss");
 
             guiController.IncreLiveBar(-1);
@@ -278,8 +301,19 @@ public class GameControl : MonoBehaviour
             {
                 bGameOver = true;
 
-                gameoverText.SetActive(true);
+                gameoverText.SetActive(true);      
                 gameOverElapsedTime = gameOverTime;
+
+                // Show gold or silver or bronze medal based on
+                // the percentage of great hits, good hits, or ok hits
+                int numTotalHits = numGoodHit + numGreatHit + numOkHit + numMissHit;
+                numTotalHits = (numTotalHits == 0) ? 1 : numTotalHits;
+                if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.75f)
+                    goldMedalLabel.SetActive(true);
+                else if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.5f)
+                    silverMedalLabel.SetActive(true);
+                else
+                    bronzeMedalLabel.SetActive(true);
 
                 SaveHighScore();
             }
