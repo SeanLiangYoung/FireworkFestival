@@ -126,7 +126,10 @@ public class GameControl : MonoBehaviour
                 if (currentBeatIdx < numBeatDuration)
                     elapsedTime += beatDurations[currentBeatIdx++];
                 else
+                {
                     bGameOver = true;
+                    GameOver();
+                }
 
                 //if (Random.value < 0.5)
                 //    SpawnNote(0, new Vector3(15.0f, 0.0f, 0.0f));
@@ -392,5 +395,26 @@ public class GameControl : MonoBehaviour
         PlayerPrefs.SetInt("HG3", highscore3);
 
         PlayerPrefs.Save();
+    }
+
+    void GameOver()
+    {
+        bGameOver = true;
+
+        gameoverText.SetActive(true);
+        gameOverElapsedTime = gameOverTime;
+
+        // Show gold or silver or bronze medal based on
+        // the percentage of great hits, good hits, or ok hits
+        int numTotalHits = numGoodHit + numGreatHit + numOkHit + numMissHit;
+        numTotalHits = (numTotalHits == 0) ? 1 : numTotalHits;
+        if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.75f)
+            goldMedalLabel.SetActive(true);
+        else if ((float)(numGoodHit + numGreatHit) / numTotalHits > 0.5f)
+            silverMedalLabel.SetActive(true);
+        else
+            bronzeMedalLabel.SetActive(true);
+
+        SaveHighScore();
     }
 }
