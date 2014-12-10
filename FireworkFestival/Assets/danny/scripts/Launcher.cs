@@ -36,6 +36,7 @@ public class Launcher : MonoBehaviour
 
 			ps = ( ParticleSystem )current_go.GetComponent( typeof( ParticleSystem ) );
             //ps.startLifetime = 1.5f + 0.5f * (height_level-1);
+			//ps.particleEmitter.col
 			ps.Emit( num_shells );
 			if (note != null) { 
 				noteObjects.Add(note);
@@ -96,9 +97,13 @@ public class Launcher : MonoBehaviour
 
 	public void TriggerExplosion () {
 		int length = ps.GetParticles(currentParticles);
+		currentParticles[0].lifetime = 0.0f;
+		ps.SetParticles(currentParticles,length);
 		ParticleSystem secondaryPs = Instantiate( secondaryParticles[particle_index], currentParticles[0].position, Quaternion.identity ) as ParticleSystem;
 		//secondaryPs.gameObject.transform.position = currentParticles[0].position;
-		secondaryPs.Emit(1000);
+		secondaryPs.startLifetime = 0.01f;
+		//secondaryPs.startSpeed = 0.0f;
+		secondaryPs.Emit(1);
 //		for (int i =0; i < 1000; i ++) {
 //			secondaryPs.Emit(currentParticles[0].position,currentParticles[0].velocity,1.0f,2.0f,currentParticles[0].color);
 //		}
